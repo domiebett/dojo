@@ -69,5 +69,3 @@ class AddPersonTestCase(unittest.TestCase):
 
         illegal_staff = self.living_space_room.add_occupant(self.staff_member)
         self.assertEqual(illegal_staff, "Staff not allowed in Living Space")
-
-    
