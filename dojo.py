@@ -72,7 +72,7 @@ class Dojo():
         empty_rooms = []
         new_person = ""
 
-        # 
+        # If person is staff, as
         if person_role == "staff":
             new_person = Staff(person_name)
             empty_rooms = self.empty_arrays(self.office_array)
