@@ -1,11 +1,20 @@
 #!/usr/bin/env python
 
-"""main.py
-    Usage:
-        main.py create_room <room_type> [<room_name>]...
-        main.py add_person <person_name> (--fellow | --staff) [--accommodate=<N>]
-    Options:
-
+doc = """
+usage: main.py
+    main.py create_room <room_type> <room_name>...
+    main.py add_person <person_name> (--fellow | --staff) [--accommodate=<N>]
+    main.py -h | --h
+    main.py --version
+options:
+    room_type           type of room
+    room_name           name of Room
+    person_name         name aof person
+    accommodate         y or no
+    --fellow            fellow is a fellow
+    --staff             i wonder even why we have a staff option
+    -h --help           display the full help options
+    -v --version        display the app's running version
 """
 
 from docopt import docopt
@@ -15,11 +24,6 @@ from people import Person, Fellow, Staff
 from dojo import Dojo
 from rooms import Room, Office, LivingSpace
 
-# Function creates a person object by instantiating the person role
-# class, i.e Fellow or Staff
-
-def add_person(person_name, person_role, wants_accomodation):
-    pass
 
 # main function that calls respective functions depending on argument
 # passed on command line
@@ -41,10 +45,10 @@ def main(docopt_args):
         elif docopt_args['--staff']:
             person_role = "staff"
         
-        wants_accomodation = docopt['--accomodate']
-        add_person(person_name, person_role, wants_accomodation)
+        wants_accomodation = docopt_args['--accommodate']
+        Dojo().add_person(person_name, person_role, wants_accomodation)
 
 
 if __name__ == '__main__':
-    args = docopt(__doc__)
+    args = docopt(doc)
     main(args)
