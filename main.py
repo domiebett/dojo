@@ -30,12 +30,19 @@ from rooms import Room, Office, LivingSpace
 
 def main(docopt_args):
 
+    # Reads the value of dict create room in docopts returned values
+    # and calls the create_room function in dojo with the arguments
+    # passed.
+
     if docopt_args['create_room']:
 
         room_type = docopt_args['<room_type>']
         room_names = docopt_args['<room_name>']
         Dojo().create_room(room_type, room_names)
-
+    
+    # Calls the add_person function in dojo with values for person parsed
+    # in the command line.
+    
     if (docopt_args['add_person']):
         person_name = docopt_args['<person_name>']
         person_role = ""
