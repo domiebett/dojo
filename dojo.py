@@ -46,6 +46,11 @@ class Dojo():
         empty_offices = self.empty_rooms(self.office_array)
         empty_living_space = self.empty_rooms(self.living_space_array)
 
+        #checks if there is an office to add person
+
+        if (len(empty_offices) <= 0):
+            return "There is no office room to add person"
+
         random_office = random.choice(empty_offices)
         random_office_name = ""
         random_living_space_name = "None"
@@ -61,6 +66,9 @@ class Dojo():
         # Adds a fellow to a  living space depending on whether
         # they want accommodation.
             if (wants_accommodation == "Y"):
+
+                if (len(empty_living_space)<=0):
+                    return "There is no living space to add person"
 
                 random_living_space = random.choice(empty_living_space)
                 random_living_space.add_occupant(fellow)
@@ -106,6 +114,12 @@ class Dojo():
         if room_type == "living_space":
 
             for room_name in room_names:
+
+                for name in rooms:
+                    if name == room_name:
+                        print("Room named " + room_name + " already exists")
+                        return "Room exists"
+                        
                 new_room = LivingSpace(room_name)
                 self.add_room(new_room)
 
