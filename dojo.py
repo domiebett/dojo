@@ -1,5 +1,4 @@
 import random
-
 from rooms import Room, Office, LivingSpace
 from people import Person, Fellow, Staff
 
@@ -12,10 +11,10 @@ class Dojo():
     respectively.
     """
 
-    # initialises the class
+    #initialises the class
 
     def __init__(self):
-        self.office_array = [Office("Blue")]
+        self.office_array = []
         self.living_space_array = []
 
     # Adds rooms created in the main module into their
@@ -28,33 +27,7 @@ class Dojo():
         elif isinstance(room, LivingSpace):
             self.living_space_array.append(room)
 
-    # Creates a room either office or living space that is then
-    # added to the respective lists in Dojo class
-
-    def create_room(self, room_type, room_names):
-
-        # The two below if statements creates an Office or LivingSpace
-        # object, same number of times equal to the number of arguments
-        # passed for room names in command line
-
-        if room_type == "office":
-
-            for room_name in room_names:
-                new_room = Office(room_name)
-                self.add_room(new_room)
-
-        if room_type == "living_space":
-
-            for room_name in room_names:
-                new_room = LivingSpace(room_name)
-                self.add_room(new_room)
-
-        self.get_rooms(room_type)
-
-    # Returns all empty rooms in a office or living space depending
-    # on which person (staff|fellow) is been added
-
-    def empty_arrays(self, array):
+    def empty_rooms(self, array):
 
         empty_rooms = []
 
@@ -64,29 +37,95 @@ class Dojo():
 
         return empty_rooms
 
+
     # Function creates a person object by instantiating the person role
     # class, i.e Fellow or Staff
 
-    def add_person(self, person_name, person_role, wants_accomodation):
+    def add_person(self, person_name, person_role, wants_accommodation):
 
-        empty_rooms = []
-        new_person = ""
+        empty_offices = self.empty_rooms(self.office_array)
+        empty_living_space = self.empty_rooms(self.living_space_array)
 
-        if person_role == "staff":
-            new_person = Staff(person_name)
-            empty_rooms = self.empty_arrays(self.office_array)
+        #checks if there is an office to add person
 
-        elif person_role == "fellow":
-            new_person = Fellow(person_name)
-            empty_rooms = self.empty_arrays(self.office_array)
+        if (len(empty_offices) <= 0):
+            return "There is no office room to add person"
 
-        random_room = random.choice(empty_rooms)
-        random_room.add_occupant(new_person)
+        random_office = random.choice(empty_offices)
+        random_office_name = ""
+        random_living_space_name = "None"
 
-        for x in random_room.room_occupants:
-            print (x.name)
+        # Adds a fellow to a random office that still has space.
 
-    # Used to fetch data from the room arrays in __init__.
+        if (person_role == "fellow"):
+
+            fellow = Fellow(person_name)
+            random_office.add_occupant(fellow)
+            random_office_name = random_office.name
+        
+        # Adds a fellow to a  living space depending on whether
+        # they want accommodation.
+            if (wants_accommodation == "Y"):
+
+                if (len(empty_living_space)<=0):
+                    return "There is no living space to add person"
+
+                random_living_space = random.choice(empty_living_space)
+                random_living_space.add_occupant(fellow)
+                random_living_space_name = random_living_space.name
+        
+        # Adds a staff member to random office with space
+
+        if (person_role == "staff"):
+
+            staff = Staff(person_name)
+            random_office.add_occupant(staff)
+            random_office_name = random_office.name
+            
+        print("\n" + person_name + " (" + person_role + ")" " has been assinged:")
+        print("  Office: " + random_office_name)
+        print("  Living Space: " + random_living_space_name + "\n")
+    
+    # Creates a room either office or living space that is then
+    # added to the respective lists in Dojo class
+
+    def create_room(self, room_type, room_names):
+
+        office_names = [room.name for room in self.office_array]
+        living_space_names = [room.name for room in self.living_space_array]
+        rooms = office_names + living_space_names
+
+
+        # The two below if statements creates an Office or LivingSpace
+        # object, same number of times equal to the number of arguments
+        # passed for room names in command line
+
+        if room_type == "office":
+
+            for room_name in room_names:
+                for name in rooms:
+                    if name == room_name:
+                        print("Room named " + room_name + " already exists")
+                        return "Room exists"
+
+                new_room = Office(room_name)
+                self.add_room(new_room)
+
+        if room_type == "living_space":
+
+            for room_name in room_names:
+
+                for name in rooms:
+                    if name == room_name:
+                        print("Room named " + room_name + " already exists")
+                        return "Room exists"
+                        
+                new_room = LivingSpace(room_name)
+                self.add_room(new_room)
+
+        self.get_rooms(room_type)
+
+    # Used to fetch data from the room arrays above.
 
     def get_rooms(self, room_type):
         if room_type == "office":
