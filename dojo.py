@@ -1,4 +1,6 @@
+import random
 from rooms import Room, Office, LivingSpace
+from people import Person, Fellow, Staff
 
 
 class Dojo():
@@ -13,7 +15,9 @@ class Dojo():
 
     def __init__(self):
         self.office_array = []
+        self.office_array.append(Office("Blue"))
         self.living_space_array = []
+        self.living_space_array.append(LivingSpace("Red"))
 
     # Adds rooms created in the main module into their
     # respective arrays above.
@@ -24,10 +28,60 @@ class Dojo():
 
         elif isinstance(room, LivingSpace):
             self.living_space_array.append(room)
+
+    def empty_rooms(self, array):
+
+        empty_rooms = []
+
+        for x in array:
+            if not x.is_full():
+                empty_rooms.append(x)
+
+        return empty_rooms
+
+
+    # Function creates a person object by instantiating the person role
+    # class, i.e Fellow or Staff
+
+    def add_person(self, person_name, person_role, wants_accommodation):
+
+        empty_offices = self.empty_rooms(self.office_array)
+        empty_living_space = self.empty_rooms(self.living_space_array)
+
+        random_office = random.choice(empty_offices)
+        random_office_name = ""
+        random_living_space_name = "None"
+
+        # Adds a fellow to a random office that still has space.
+
+        if (person_role == "fellow"):
+
+            fellow = Fellow(person_name)
+            random_office.add_occupant(fellow)
+            random_office_name = random_office.name
+        
+        # Adds a fellow to a  living space depending on whether
+        # they want accommodation.
+            if (wants_accommodation == "Y"):
+
+                random_living_space = random.choice(empty_living_space)
+                random_living_space.add_occupant(fellow)
+                random_living_space_name = random_living_space.name
+        
+        # Adds a staff member to random office with space
+
+        if (person_role == "staff"):
+
+            staff = Staff(person_name)
+            random_office.add_occupant(staff)
+            random_office_name = random_office.name
+            
+        print("\n" + person_name + " (" + person_role + ")" " has been assinged:")
+        print("  Office: " + random_office_name)
+        print("  Living Space: " + random_living_space_name + "\n")
     
     # Creates a room either office or living space that is then
     # added to the respective lists in Dojo class
-
 
     def create_room(self, room_type, room_names):
 
