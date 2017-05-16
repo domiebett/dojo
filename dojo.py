@@ -85,6 +85,11 @@ class Dojo():
 
     def create_room(self, room_type, room_names):
 
+        office_names = [room.name for room in self.office_array]
+        living_space_names = [room.name for room in self.living_space_array]
+        rooms = office_names + living_space_names
+
+
         # The two below if statements creates an Office or LivingSpace
         # object, same number of times equal to the number of arguments
         # passed for room names in command line
@@ -92,6 +97,11 @@ class Dojo():
         if room_type == "office":
 
             for room_name in room_names:
+                for name in rooms:
+                    if name == room_name:
+                        print("Room exists")
+                        return "Room exists"
+
                 new_room = Office(room_name)
                 self.add_room(new_room)
 
