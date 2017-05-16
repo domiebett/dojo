@@ -72,7 +72,6 @@ class Dojo():
         empty_rooms = []
         new_person = ""
 
-        # If person is staff, as
         if person_role == "staff":
             new_person = Staff(person_name)
             empty_rooms = self.empty_arrays(self.office_array)
@@ -80,10 +79,10 @@ class Dojo():
         elif person_role == "fellow":
             new_person = Fellow(person_name)
             empty_rooms = self.empty_arrays(self.office_array)
-        
+
         random_room = random.choice(empty_rooms)
         random_room.add_occupant(new_person)
-        
+
         for x in random_room.room_occupants:
             print (x.name)
 
