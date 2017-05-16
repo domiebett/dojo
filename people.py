@@ -6,22 +6,6 @@ class Person(object):
         self.role = role
         self.living_space = living_space
 
-    #Assigns room to specific person depending on whether they
-    #are fellow or staff
-
-    def assign_room():
-        pass
-
-
-class Fellow(Person):
-
-    def __init__(self, name, living_space=False):
-        self.name = name
-        self.role = "Fellow"
-        self.living_space = living_space
-        self.age = 0
-        self.gender = ""
-    
     # Sets the gender variable
 
     def set_gender(self, gender):
@@ -46,8 +30,21 @@ class Fellow(Person):
             return "Age not assigned"
         return self.age
 
+
+class Fellow(Person):
+
+    def __init__(self, name, living_space=False):
+        self.name = name
+        self.role = "Fellow"
+        self.living_space = living_space
+        self.age = 0
+        self.gender = ""
+
+
 class Staff(Person):
 
     def __init__(self, name):
         self.name = name
         self.role = "Staff"
+        self.age = 0
+        self.gender = ""
