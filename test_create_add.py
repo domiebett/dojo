@@ -7,7 +7,7 @@ from people import Person, Fellow, Staff
 
 class CreateRoomTestCase(unittest.TestCase):
 
-"""Tests for the create_room and add_person functionality"""
+    """Tests for the create_room and add_person functionality"""
 
     def setUp(self):
 
@@ -76,3 +76,12 @@ class AddPersonTestCase(unittest.TestCase):
 
         illegal_staff = self.living_space_room.add_occupant(self.staff_member)
         self.assertEqual(illegal_staff, "Staff not allowed in Living Space")
+    
+    def test_cant_add_person_if_there_is_no_room(self):
+
+        illegal_addition = self.dojo_object.add_person("Dominic Bett", "fellow", "Y")
+        self.assertEqual(illegal_addition, "There is no office room to add person")
+
+        self.dojo_object.create_room("office", ["Blue"])
+        illegal_addition = self.dojo_object.add_person("Dominic Bett", "fellow", "Y")
+        self.assertEqual(illegal_addition, "There is no living space to add person")
