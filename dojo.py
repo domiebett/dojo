@@ -15,9 +15,7 @@ class Dojo():
 
     def __init__(self):
         self.office_array = []
-        self.office_array.append(Office("Blue"))
         self.living_space_array = []
-        self.living_space_array.append(LivingSpace("Red"))
 
     # Adds rooms created in the main module into their
     # respective arrays above.
@@ -99,7 +97,7 @@ class Dojo():
             for room_name in room_names:
                 for name in rooms:
                     if name == room_name:
-                        print("Room exists")
+                        print("Room named " + room_name + " already exists")
                         return "Room exists"
 
                 new_room = Office(room_name)
