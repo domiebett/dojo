@@ -2,6 +2,8 @@ from people import Staff
 
 class Room(object):
 
+    """Creates a Room Object in the dojo"""
+
     global maximum_people
     maximum_people = 0
     global room_occupants
