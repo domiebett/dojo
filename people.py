@@ -6,14 +6,10 @@ class Person(object):
         self.role = role
         self.living_space = living_space
 
-    #Assigns room to specific person depending on whether they
-    #are fellow or staff
-
-    def assign_room():
-        pass
-
 
 class Fellow(Person):
+
+    """Creates an Fellow Object representing an Andela fellow"""
 
     def __init__(self, name, living_space=False):
         self.name = name
