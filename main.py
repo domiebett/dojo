@@ -1,7 +1,7 @@
 """
 Usage:
 main.py>> create_room <roomtype> <name>...                                                           
-main.py>> add_person <first_name> <last_name> <person_role> [--accommodate=N]   
+main.py>> add_person <first_name> <last_name> <person_role> [--a=N]   
 main.py>> find_userid <first_name> <last_name>                                                       
 main.py>> reallocate_person <person_ID> <room_name>                                               
 main.py>> load_people <filename>
@@ -88,7 +88,7 @@ class FrontDojo(cmd.Cmd):
         """Usage: add_person <first_name> <last_name> <person_role> [--a=<want_accomodation>]"""
         person_name = arg['<first_name>'] + ' ' + arg['<last_name>']
         if arg['--a'] == None:
-            want_accomodation = 'n'
+            want_accomodation = 'N'
         else:
             want_accomodation = str(arg['--a'])
         person_role = arg['<person_role>']
@@ -121,8 +121,12 @@ class FrontDojo(cmd.Cmd):
     def do_print_allocations(self, args):
 
         '''Usage: print_allocations [--o=filename]'''
-        # print(self.dojo.print_allocations(args))
-        pass
+        if args['--o'] == None:
+            output = "None"
+        else:
+            output = str(args['--o'])
+
+        print(self.dojo.print_allocations(output))
 
     @docopt_cmd
     def do_print_unallocated(self, args):
@@ -135,8 +139,7 @@ class FrontDojo(cmd.Cmd):
     def do_print_room(self, arg):
 
         """Usage: print_room <room_name>"""
-        # print(self.dojo.print_room(arg['<room_name>']))
-        pass
+        print(self.dojo.print_room(arg['<room_name>']))
 
     @docopt_cmd
     def do_save_state(self, args):
