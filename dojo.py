@@ -17,7 +17,10 @@ class Dojo():
     def __init__(self):
         self.office_array = []
         self.living_space_array = []
-
+    
+    #returns a random room that has space for more occupants. Argument
+    #passed can be the office_array or the living_space_array.
+    
     def random_empty_rooms(self, array):
 
         empty_rooms = []
@@ -96,8 +99,7 @@ class Dojo():
         rooms = office_names + living_space_names
 
         # The two below if statements creates an Office or LivingSpace
-        # object, same number of times equal to the number of arguments
-        # passed for room names in command line
+        # object, depending on the room_type
 
         if room_type == "office":
 
@@ -135,10 +137,15 @@ class Dojo():
 
     def print_room(self, room_name):
 
+        #merges the office and living_space arrays.
+
         merged_array = self.office_array + self.living_space_array
 
         if len(merged_array)<=0:
             return "No room exists"
+
+        #loops through merged array to find room with the name in
+        #function argument and prints it and its occupants.
 
         for room in merged_array:
 
@@ -155,7 +162,12 @@ class Dojo():
                 string += "\n"
                 return string
 
+    # Used to print all allocations for all rooms in the Andela dojo.
+
     def print_allocations(self, output):
+
+        #Builds a string that contains all the data and either returns
+        #it to be printed or makes a new file with the name in argument.
 
         string = "\nAllocations: \n"
         string+="\tOffices\n"
@@ -175,15 +187,20 @@ class Dojo():
                 string+="\t\t\t" + occupant.name + "\n"
         
         string+="\n"
+
+        #returns the string to be printed to console.
         
         if output=="None":
             return string
+
+        #creates txt file and writes to it.
         else:
             file_name = "output/" + output+".txt"
             file_output = open(file_name, "w")
             file_output.write(string)
             file_output.close()
             return "File saved to " + file_name + "."
+
 
     # Used to fetch data from the room arrays above.
 
