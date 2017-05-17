@@ -31,7 +31,7 @@ class CreateRoomTestCase(unittest.TestCase):
 
         for i in range(4):
             self.office_room.add_occupant(self.commuter)
-        
+
         occupants = len(self.office_room.room_occupants)
         self.assertEqual(occupants, 4)
 
@@ -67,6 +67,7 @@ class CreateRoomTestCase(unittest.TestCase):
 class AddPersonTestCase(unittest.TestCase):
 
     def setUp(self):
+        
         self.living_space_room = LivingSpace("Red")
         self.office_room = Office("Blue")
         self.staff_member = Staff("Harry")
