@@ -1,7 +1,7 @@
 """
 Usage:
 main.py>> create_room <roomtype> <name>...                                                           
-main.py>> add_person <first_name> <last_name> <person_role> [--a=N]   
+main.py>> add_person <first_name> <last_name> <person_role> [--a=<want_accomodation>]   
 main.py>> find_userid <first_name> <last_name>                                                       
 main.py>> reallocate_person <person_ID> <room_name>                                               
 main.py>> load_people <filename>
@@ -69,7 +69,7 @@ class FrontDojo(cmd.Cmd):
     header = "  D O J O  "
     cprint(figlet_format(header, font="starwars"), "green")
     intro = """
-      THE SPACE ALLOCATOR OF YOUR DREAMS   """
+      WELCOME TO ANDELA. BECOME OVERCOME PROSPER   """
     cprint(figlet_format(intro, font='digital'), "white")
 
     prompt = 'Dojo>> '
@@ -122,7 +122,7 @@ class FrontDojo(cmd.Cmd):
 
         '''Usage: print_allocations [--o=filename]'''
         if args['--o'] == None:
-            output = "None"
+            output = None
         else:
             output = str(args['--o'])
 
@@ -132,8 +132,11 @@ class FrontDojo(cmd.Cmd):
     def do_print_unallocated(self, args):
 
         """Usage: print_unallocated [--o=filename]"""
-        # print(self.dojo.print_unallocated(args))
-        pass
+        if args['--o'] == None:
+            output = None
+        else:
+            output = str(args['--o'])
+        print(self.dojo.print_unallocated(output))
 
     @docopt_cmd
     def do_print_room(self, arg):
