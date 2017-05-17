@@ -20,7 +20,7 @@ class AllocationsTestCase(unittest.TestCase):
         test_room = self.dojo_object.office_array[0]
         test_room.add_occupant(Fellow("Dominic Bett", "N"))
         test_room.add_occupant(Fellow("Jamie Heineman"))
-        test_room.add_occupant(Fellow("Grant Imahara"))
+        test_room.add_occupant(Staff("Grant Imahara"))
         names_list = [occupant.name for occupant in test_room.room_occupants]
 
         self.assertListEqual(names_list, ["Dominic Bett", "Jamie Heineman",
