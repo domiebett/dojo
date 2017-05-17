@@ -35,13 +35,15 @@ class Room(object):
         elif (isinstance(self, LivingSpace)):
             if (isinstance(person, Staff)):
                 return "Staff not allowed in Living Space"
+            else:
+                self.room_occupants.append(person)
         else:
             self.room_occupants.append(person)
 
 
 class LivingSpace(Room):
 
-    #Creates global variables, which represent maximum capacity
+    #Initialises variables, which represent maximum capacity
     #of the living space and current number of occupants in the living space.
 
     def __init__(self, name):
@@ -54,7 +56,7 @@ class LivingSpace(Room):
 
 class Office(Room):
 
-    #Creates global variables, which represent maximum capacity
+    #Initialises variables, which represent maximum capacity
     #of the living space and current number of occupants in the living space.
 
     def __init__(self, name):
