@@ -28,7 +28,7 @@ class AllocationsTestCase(unittest.TestCase):
         self.assertListEqual(names_list, ["Dominic Bett", "Jamie Heineman",
         "Grant Imahara"])
     
-    #test if print_allocations returns no allocations if they
+    #test print_allocations returns no allocations if they
     #dont exist
 
     def test_allocations_are_printed_appropriately(self):
@@ -42,8 +42,8 @@ class AllocationsTestCase(unittest.TestCase):
         string += "\n"
         self.assertEqual(string, print_string)
 
-    #test to find out if print_room functionality doesnt return
-    #anything if there were no rooms with the same name.
+    #test print_room functionality doesnt return anything if there were no
+    #rooms with the same name.
     
     def test_finds_no_room_if_no_room_with_name_exists(self):
 
