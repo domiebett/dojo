@@ -69,7 +69,7 @@ class FrontDojo(cmd.Cmd):
     header = "  D O J O  "
     cprint(figlet_format(header, font="starwars"), "green")
     intro = """
-      WELCOME TO ANDELA. BECOME OVERCOME PROSPER   """
+      ANDELA. BECOME OVERCOME PROSPER   """
     cprint(figlet_format(intro, font='digital'), "white")
 
     prompt = 'Dojo>> '
