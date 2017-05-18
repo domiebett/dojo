@@ -31,7 +31,7 @@ class CreateRoomTestCase(unittest.TestCase):
 
         for i in range(4):
             self.office_room.add_occupant(self.commuter)
-        
+
         occupants = len(self.office_room.room_occupants)
         self.assertEqual(occupants, 4)
 
@@ -67,6 +67,7 @@ class CreateRoomTestCase(unittest.TestCase):
 class AddPersonTestCase(unittest.TestCase):
 
     def setUp(self):
+        
         self.living_space_room = LivingSpace("Red")
         self.office_room = Office("Blue")
         self.staff_member = Staff("Harry")
@@ -77,11 +78,10 @@ class AddPersonTestCase(unittest.TestCase):
         illegal_staff = self.living_space_room.add_occupant(self.staff_member)
         self.assertEqual(illegal_staff, "Staff not allowed in Living Space")
     
-    def test_cant_add_person_if_there_is_no_room(self):
+    def test_person_is_added_to_unallocated(self):
 
-        illegal_addition = self.dojo_object.add_person("Dominic Bett", "fellow", "Y")
-        self.assertEqual(illegal_addition, "There is no office room to add person")
-
-        self.dojo_object.create_room("office", ["Blue"])
-        illegal_addition = self.dojo_object.add_person("Dominic Bett", "fellow", "Y")
-        self.assertEqual(illegal_addition, "There is no living space to add person")
+        self.dojo_object.add_person("Dominic Bett", "fellow", "Y")
+        unallocated = self.dojo_object.office_unallocated
+        self.assertEqual(len(unallocated), 1)
+        unallocated = self.dojo_object.living_unallocated
+        self.assertEqual(len(unallocated), 1)
