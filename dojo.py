@@ -1,13 +1,13 @@
 import random
-from rooms import Room, Office, LivingSpace
-from people import Person, Fellow, Staff
+from rooms import Office, LivingSpace
+from people import Fellow, Staff
 
 
 class Dojo():
 
-    """Creates two global variables, office_array and 
-    living_space_array which are lists that hold data 
-    for rooms that are Offices and Living Spaces 
+    """Creates two global variables, office_array and
+    living_space_array which are lists that hold data
+    for rooms that are Offices and Living Spaces
     respectively.
     """
 
@@ -42,7 +42,7 @@ class Dojo():
 
     # append people who have no allocated rooms to respective lists above.
 
-    def append_unallocated_rooms(self, person_name, person_role="fellow", room="O"):
+    def append_unallocated_persons(self, person_name, person_role="fellow", room="O"):
 
         person = ""
         if person_role == "fellow":
@@ -64,15 +64,15 @@ class Dojo():
 
         random_office = self.random_empty_rooms(self.office_array)
         random_living_space = self.random_empty_rooms(self.living_space_array)
-        print("\n" + person_name + " (" + person_role + ")" " has been assigned:")
+        print("\n   " + person_name + " (" + person_role + ")" " has been assigned:")
 
         # checks if there is an office to add person. If there isn't,
         # appends person to unallocated office array
 
         if random_office == "Full":
 
-            print("  All offices are filled. Assigning to unallocated")
-            self.append_unallocated_rooms(person_name)
+            print("     Offices are full. Assigning to unallocated")
+            self.append_unallocated_persons(person_name)
             random_office_name = "UNALLOCATED !!"
 
         else:
@@ -85,7 +85,7 @@ class Dojo():
             fellow = Fellow(person_name)
             if not random_office == "Full":
                 random_office.add_occupant(fellow)
-            print("  Office: " + random_office_name)
+            print("     Office: " + random_office_name)
 
         # Adds a fellow to a  living space depending on whether
         # they want accommodation.
@@ -94,8 +94,8 @@ class Dojo():
 
                 if random_living_space == "Full":
 
-                    print("  All living spaces are filled. Assigning to unallocated\n")
-                    self.append_unallocated_rooms(
+                    print("     Living spaces are full. Assigning to unallocated")
+                    self.append_unallocated_persons(
                         person_name, person_role, "L")
                     random_living_space_name = "UNALLOCATED !!"
 
@@ -103,7 +103,7 @@ class Dojo():
                     random_living_space_name = random_living_space.name
                     random_living_space.add_occupant(fellow)
 
-                print("  Living Space: " + random_living_space_name + "\n")
+                print("     Living Space: " + random_living_space_name + "\n")
 
         # Adds a staff member to random office with space
 
@@ -114,16 +114,18 @@ class Dojo():
             random_office_name = random_office.name
             print("  Office: " + random_office_name)
 
-    # Creates a room either office or living space that is then
-    # added to the respective lists in Dojo class
+    # Calls the room creator
 
     def create_room(self, room_type, room_names):
         for room in room_names:
-            return self.room_creator(room_type, room)
+            self.room_creator(room_type, room)
 
         print("\nOffices quantity: " + str(len(self.office_array)) +
               "\nLiving Spaces: " + str(len(self.living_space_array)) +
               "\n")
+
+    # Creates a room either office or living space that is then
+    # added to the respective lists in Dojo class
 
     def room_creator(self, room_type, room_name):
 
@@ -153,7 +155,7 @@ class Dojo():
 
             new_room = LivingSpace(room_name)
             self.add_room(new_room)
-
+        
         return "Created Successfully"
 
     # Adds rooms created in the main module into their
@@ -203,28 +205,32 @@ class Dojo():
         # Builds a string that contains all the data and either returns
         # it to be printed or makes a new file with the name in argument.
 
-        string = "\nAllocations: \n"
-        string += "\tOffices\n"
-        string += "\t---------\n"
+        string = "\nALLOCATIONS: \n"
+        string += "\tOFFICES\n"
+        string += "\t---------"
         for room in self.office_array:
-            string += "\t\tOffice Name: " + room.name + "\n"
-            string += "\t\tOccupants: \n"
+            string += "\n\tOffice Name: " + room.name + "\n"
+            string += "\tOccupants: \n"
+            count=1
             for occupant in room.room_occupants:
-                string += "\t\t\t" + occupant.name + "\n"
+                string += "\t\t" + str(count) + ". " + occupant.name + "\n"
+                count+=1
 
-        string += "\n\tLiving Spaces\n"
-        string += "\t----------------\n"
+        string += "\n\tLIVING SPACES\n"
+        string += "\t----------------"
         for room in self.living_space_array:
-            string += "\tLiving Space Name:" + room.name + "\n"
-            string += "\t\tOccupants: \n"
+            string += "\n\tLiving Space Name:" + room.name + "\n"
+            string += "\tOccupants: \n"
+            count = 1
             for occupant in room.room_occupants:
-                string += "\t\t\t" + occupant.name + "\n"
+                string += "\t\t" + str(count) + ". " + occupant.name + "\n"
+                count+=1
 
         string += "\n"
 
         # returns the string to be printed to console.
 
-        if output == None:
+        if output is None:
             return string
 
         # creates txt file and writes to it.
@@ -242,20 +248,20 @@ class Dojo():
 
         # builds string with information for unallocated persons
 
-        string = "\nUnallocated: \n"
-        string += "\tOffices\n"
+        string = "\nUNALLOCATED: \n"
+        string += "\tOFFICES\n"
         string += "\t---------\n"
         for i in range(len(self.office_unallocated)):
             string += "\t\t" + str(i + 1) + ". " + \
                 self.office_unallocated[i].name + "\n"
 
-        string += "\n\tLiving Spaces\n"
+        string += "\n\tLIVING SPACES\n"
         string += "\t---------------\n"
         for i in range(len(self.living_unallocated)):
-            string += "\t\t" + str(i + 1) + " " + \
+            string += "\t\t" + str(i + 1) + ". " + \
                 self.living_unallocated[i].name + "\n"
 
-        if output == None:
+        if output is None:
             return string
 
         else:
@@ -279,14 +285,3 @@ class Dojo():
             array = self.living_space_array
         for room in array:
             print ("Created a " + room.room_type + " named " + room.name)
-
-
-# dojo_object = Dojo()
-# dojo_object.create_room("office", ["Blue"])
-# dojo_object.create_room("living_space", ["Red"])
-# dojo_object.create_room("living_space", ["Black"])
-# dojo_object.add_person("Dominic Bett", "fellow", "Y")
-# dojo_object.add_person("Kachwany Bett", "fellow", "Y")
-# dojo_object.add_person("Barazza Bett", "fellow", "Y")
-
-# dojo_object.print_allocations("output")
