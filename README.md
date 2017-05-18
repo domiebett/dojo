@@ -11,6 +11,17 @@ This repository contains files for the final Andela Bootcamp Cohort 18 Project, 
 
 ## Test Files
 
-..* test_create_add.py	-Contains test cases for the create_room and add_person task 0.
+ 1. test_create_add.py	-Contains test cases for the create_room and add_person task 0.
+ 2. test_allocations.py -Contains test cases for print_room, print_allocations and print_unallocated
+
 
 It also contains this README.md file.
+
+# Functionality
+1. create_room >> Creates a room, either Office or Living Space and appends the room to an array in Dojo class in dojo.py
+2. add_person >> Adds person either Fellow or Staff and gives them an office. Adds them to specific rooms depending on their requirements.
+3. print_room >> prints occupants of the room whose name is given as arguments in function.
+4. print_allocations >> outputs to text file if --o option is given, else prints all allocations to the console.
+5. print_unallocated >> output to text file if --o option is given, else prints all unallocated person to the console.
+
+Check Usage docs in main.py for a full understanding of the arguments to be passed.
