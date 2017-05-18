@@ -14,6 +14,8 @@ class AllocationsTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
+    #tests if occupants in rooms are equal to what was input
+
     def test_if_right_number_of_occupants_is_output(self):
 
         self.dojo_object.create_room("office", ["Blue"])
@@ -25,3 +27,26 @@ class AllocationsTestCase(unittest.TestCase):
 
         self.assertListEqual(names_list, ["Dominic Bett", "Jamie Heineman",
         "Grant Imahara"])
+    
+    #test if print_allocations returns no allocations if they
+    #dont exist
+
+    def test_allocations_are_printed_appropriately(self):
+
+        print_string = self.dojo_object.print_allocations(self, None)
+        string = "\nAllocations: \n"
+        string += "\tOffices\n"
+        string += "\t---------\n"
+        string += "\n\tLiving Spaces\n"
+        string += "\t----------------\n"
+        string += "\n"
+        self.assertEqual(string, print_string)
+
+    #test to find out if print_room functionality doesnt return
+    #anything if there were no rooms with the same name.
+    
+    def test_finds_no_room_if_no_room_with_name_exists(self):
+
+        print_room = self.dojo_object.print_room("White")
+        self.assertEqual(print_room, "No such room exists")
+
