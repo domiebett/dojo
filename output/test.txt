@@ -1,0 +1,40 @@
+
+ALLOCATIONS: 
+	OFFICES
+	---------
+		Office Name: Blue
+		Occupants: 
+			Dominic Bett
+			Dominic Bett
+			Dominic Bett
+			Dominic Bett
+			Dominic Bett
+			Dominic Bett
+		Office Name: White
+		Occupants: 
+			Dominic Bett
+			Dominic Bett
+			Dominic Bett
+			Dominic Bett
+			Dominic Bett
+			Dominic Bett
+		Office Name: Green
+		Occupants: 
+			Dominic Bett
+			Dominic Bett
+			Dominic Bett
+			Dominic Bett
+			Dominic Bett
+			Dominic Bett
+		Office Name: Red
+		Occupants: 
+			Dominic Bett
+			Dominic Bett
+			Dominic Bett
+			Dominic Bett
+			Dominic Bett
+			Dominic Bett
+
+	LIVING SPACES
+	----------------
+
