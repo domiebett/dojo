@@ -3,13 +3,9 @@ Usage:
 main.py>> create_room <roomtype> <name>...
 main.py>> add_person <first_name> <last_name> <person_role> [--a=<want_accomodation>]
 main.py>> find_userid <first_name> <last_name>
-main.py>> reallocate_person <person_ID> <room_name>
-main.py>> load_people <filename>
 main.py>> print_allocations [--o=file_name]
 main.py>> print_unallocated [--o=file_name]
 main.py>> print_room <room_name>
-main.py>> save_state [--db=<sqlite_database>]
-main.py>> load_state [--db=<sqlite_database>]
 main.py>> quit
 main.py>> (-i | --interactive)
 main.py>> (-h | --help)
@@ -19,7 +15,7 @@ Options:
 """
 
 from docopt import docopt, DocoptExit
-from dojo import Dojo
+from modules.dojo import Dojo
 from termcolor import cprint
 from pyfiglet import figlet_format
 import sys
@@ -78,7 +74,7 @@ class FrontDojo(cmd.Cmd):
     def do_create_room(self, arg):
 
         """Usage: create_room <room_type> <room_name>..."""
-        print(self.dojo.create_room(arg['<room_type>'], arg['<room_name>']))
+        print(self.dojo.create_room(arg['<room_type>'].lower(), arg['<room_name>']))
 
     @docopt_cmd
     def do_add_person(self, arg):
@@ -89,26 +85,27 @@ class FrontDojo(cmd.Cmd):
             want_accomodation = 'N'
         else:
             want_accomodation = str(arg['--a'])
-        person_role = arg['<person_role>']
+        person_role = arg['<person_role>'].lower()
         print(self.dojo.add_person(person_name, person_role, want_accomodation))
 
     @docopt_cmd
     def do_find_userid(self, arg):
 
         """Usage: find_userid <first_name> <last_name>"""
-        pass
+        print("Feature not implemented. Stay tuned for future release")
 
     @docopt_cmd
     def do_reallocate_person(self, arg):
 
         """Usage: reallocate_person <person_ID> <room_name>"""
-        pass
+        print("Feature not implemented. Stay tuned for future release")
 
     @docopt_cmd
     def do_load_people(self, arg):
 
         """Usage: load_people <filename>"""
-        pass
+
+        print("Feature not implemented. Stay tuned for future release")
 
     @docopt_cmd
     def do_print_allocations(self, args):
@@ -141,13 +138,13 @@ class FrontDojo(cmd.Cmd):
     def do_save_state(self, args):
 
         """Usage: save_state [--db=<sqlite_database>]"""
-        pass
+        print("Feature not implemented. Stay tuned for future release")
 
     @docopt_cmd
     def do_load_state(self, args):
 
         """Usage: load_state [--db=<sqlite_database>]"""
-        pass
+        print("Feature not implemented. Stay tuned for future release")
 
     def do_quit(self, arg):
 
