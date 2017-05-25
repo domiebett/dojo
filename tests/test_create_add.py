@@ -57,12 +57,6 @@ class CreateRoomTestCase(unittest.TestCase):
         self.assertIsInstance(self.office_room, Room)
         self.assertIsInstance(self.living_space_room, Room)
 
-    def test_existing_room_is_not_created(self):
-        
-        self.dojo_object.create_room("office", ["Black"])
-        wrong_room = self.dojo_object.create_room("office", ["Black"])
-        self.assertEqual(wrong_room, "Room exists")
-
 
 class AddPersonTestCase(unittest.TestCase):
 

@@ -1,4 +1,4 @@
-from people import Staff
+from modules.people import Staff
 
 
 class Room(object):

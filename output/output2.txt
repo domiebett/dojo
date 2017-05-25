@@ -1,0 +1,14 @@
+
+Allocations: 
+	Offices
+	---------
+		Office Name: Blue
+		Occupants: 
+			Dominic Bett
+
+	Living Spaces
+	----------------
+	Living Space Name:White
+		Occupants: 
+			Dominic Bett
+
