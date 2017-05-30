@@ -1,11 +1,13 @@
 """
 Usage:
 main.py>> create_room <roomtype> <name>...
-main.py>> add_person <first_name> <last_name> <person_role> [--a=<want_accomodation>]
+main.py>> add_person <first_name> <last_name> <person_role> [<want_accommodation>]
 main.py>> find_userid <first_name> <last_name>
 main.py>> print_allocations [--o=file_name]
 main.py>> print_unallocated [--o=file_name]
 main.py>> print_room <room_name>
+main.py>> reallocate_person <person_ID> <room_name>
+main.py>> load_people <file_name>
 main.py>> quit
 main.py>> (-i | --interactive)
 main.py>> (-h | --help)
@@ -79,14 +81,14 @@ class FrontDojo(cmd.Cmd):
     @docopt_cmd
     def do_add_person(self, arg):
 
-        """Usage: add_person <first_name> <last_name> <person_role> [--a=<want_accomodation>]"""
+        """Usage: add_person <first_name> <last_name> <person_role> [<wants_accommodation>]"""
         person_name = arg['<first_name>'] + ' ' + arg['<last_name>']
-        if arg['--a'] is None:
-            want_accomodation = 'N'
+        if arg['<wants_accommodation>'] is None:
+            want_accommodation = 'N'
         else:
-            want_accomodation = str(arg['--a'])
+            want_accommodation = str(arg['<wants_accommodation>'])
         person_role = arg['<person_role>'].lower()
-        print(self.dojo.add_person(person_name, person_role, want_accomodation))
+        print(self.dojo.add_person(person_name, person_role, want_accommodation))
 
     @docopt_cmd
     def do_find_userid(self, arg):
@@ -98,7 +100,9 @@ class FrontDojo(cmd.Cmd):
     def do_reallocate_person(self, arg):
 
         """Usage: reallocate_person <person_ID> <room_name>"""
-        print("Feature not implemented. Stay tuned for future release")
+        person_id = arg['<person_ID>']
+        room_name = arg['<room_name>']
+        self.dojo.reallocate_person(person_id, room_name)
 
     @docopt_cmd
     def do_load_people(self, arg):
