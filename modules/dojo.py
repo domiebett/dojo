@@ -1,6 +1,6 @@
 import random
-from modules.rooms import Office, LivingSpace
-from modules.people import Fellow, Staff
+from modules.rooms import Room, Office, LivingSpace
+from modules.people import Person, Fellow, Staff
 
 
 class Dojo():
@@ -191,15 +191,15 @@ class Dojo():
 
         """Prints occupants in room with name argument"""
 
-        # merges the office and living_space arrays.
-
         merged_array = self.office_array + self.living_space_array
+        room_exists = False
 
-        if len(merged_array) <= 0:
+        for room in merged_array:
+            if room.name == room_name:
+                room_exists = True
+
+        if not room_exists:
             return "No room exists"
-
-        # loops through merged_array to find room with the name in
-        # passed in as function argument and prints it and its occupants.
 
         for room in merged_array:
 
@@ -234,7 +234,8 @@ class Dojo():
             string += "\tOccupants: \n"
             count=1
             for occupant in room.room_occupants:
-                string += "\t\t" + str(count) + ". " + occupant.name + "\n"
+                string += "\t\t" + str(count) + ". " + occupant.name +\
+                          "\t" + str(occupant.id_key) + "\n"
                 count+=1
 
         string += "\n\tLIVING SPACES\n"
@@ -244,7 +245,8 @@ class Dojo():
             string += "\tOccupants: \n"
             count = 1
             for occupant in room.room_occupants:
-                string += "\t\t" + str(count) + ". " + occupant.name + "\n"
+                string += "\t\t" + str(count) + ". " + occupant.name + \
+                          "\t" + str(occupant.id_key) + "\n"
                 count+=1
 
         string += "\n"
@@ -267,20 +269,22 @@ class Dojo():
 
     def print_unallocated(self, output):
 
-        # builds string with information for unallocated persons
+        # builds string with information for unallocated persons and returns it
 
         string = "\nUNALLOCATED: \n"
         string += "\tOFFICES\n"
         string += "\t---------\n"
         for i in range(len(self.office_unallocated)):
             string += "\t\t" + str(i + 1) + ". " + \
-                self.office_unallocated[i].name + "\n"
+                self.office_unallocated[i].name + "\t" + \
+                str(self.office_unallocated[i].id_key) + "\n"
 
         string += "\n\tLIVING SPACES\n"
         string += "\t---------------\n"
         for i in range(len(self.living_unallocated)):
             string += "\t\t" + str(i + 1) + ". " + \
-                self.living_unallocated[i].name + "\n"
+                self.living_unallocated[i].name + "\t" + \
+                str(self.living_unallocated[i].id_key) + "\n"
 
         if output is None:
             return string
@@ -291,10 +295,6 @@ class Dojo():
             file_output.write(string)
             file_output.close()
             return "File saved to path: '" + file_name + "'."
-
-    def reallocate_person(self, person_identifier, new_room_name):
-
-        pass
 
     def assign_unallocated(self, room_type):
         if room_type == "office":
@@ -321,14 +321,42 @@ class Dojo():
                     self.living_unallocated.remove(person)
                     print(person.name + " has been added to Living Space " + empty_room.name)
 
+    def reallocate_person(self, person_identifier, room_name):
 
-    # Used to fetch data from the room arrays above.
+        selected_room = "None"
+        selected_person = "None"
+        person_room = "None"
+        merged_array = self.office_array + self.living_space_array
 
-    def get_rooms(self, room_type):
+        for room in merged_array:
+            if room.name == room_name:
+                selected_room = room
 
-        if room_type == "office":
-            array = self.office_array
-        elif room_type == "living_space":
-            array = self.living_space_array
-        for room in array:
-            print("Created a " + room.room_type + " named " + room.name)
+            for person in room.room_occupants:
+                if int(person.id_key) == int(person_identifier):
+                    person_room = room
+                    room_type = person_room.room_type
+                    selected_person = person
+
+        if isinstance(selected_room, Room):
+
+            if isinstance(selected_person, Person):
+
+                if person_room.room_type == selected_room.room_type:
+
+                    selected_room.add_occupant(selected_person)
+                    person_room.room_occupants.remove(selected_person)
+
+                else:
+                    print("\n   You have to reallocated to similar room types\n")
+                    return "Cannot add to room"
+
+            else:
+                print("Person doesnt exist")
+                return "Person doesnt exist"
+        else:
+            print("Room doesnt exist")
+            return "Room doesnt exist"
+
+    def load_people(self, file_name):
+        pass
