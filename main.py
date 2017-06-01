@@ -3,8 +3,8 @@ Usage:
 main.py>> create_room <roomtype> <name>...
 main.py>> add_person <first_name> <last_name> <person_role> [<want_accommodation>]
 main.py>> find_userid <first_name> <last_name>
-main.py>> print_allocations [--o=file_name]
-main.py>> print_unallocated [--o=file_name]
+main.py>> print_allocations [<filename>]
+main.py>> print_unallocated [<file_name>]
 main.py>> print_room <room_name>
 main.py>> reallocate_person <person_ID> <room_name>
 main.py>> load_people <file_name>
@@ -76,7 +76,7 @@ class FrontDojo(cmd.Cmd):
     def do_create_room(self, arg):
 
         """Usage: create_room <room_type> <room_name>..."""
-        print(self.dojo.create_room(arg['<room_type>'].lower(), arg['<room_name>']))
+        self.dojo.create_room(arg['<room_type>'].lower(), arg['<room_name>'])
 
     @docopt_cmd
     def do_add_person(self, arg):
@@ -88,7 +88,7 @@ class FrontDojo(cmd.Cmd):
         else:
             want_accommodation = str(arg['<wants_accommodation>'])
         person_role = arg['<person_role>'].lower()
-        print(self.dojo.add_person(person_name, person_role, want_accommodation))
+        self.dojo.add_person(person_name, person_role, want_accommodation)
 
     @docopt_cmd
     def do_find_userid(self, arg):
@@ -108,28 +108,28 @@ class FrontDojo(cmd.Cmd):
     def do_load_people(self, arg):
 
         """Usage: load_people <filename>"""
-
-        print("Feature not implemented. Stay tuned for future release")
+        file_name = arg['<filename>']
+        self.dojo.load_people(file_name)
 
     @docopt_cmd
     def do_print_allocations(self, args):
 
-        '''Usage: print_allocations [--o=filename]'''
-        if args['--o'] is None:
+        '''Usage: print_allocations [<filename>]'''
+        if args['<filename>'] is None:
             output = None
         else:
-            output = str(args['--o'])
+            output = str(args['<filename>'])
 
         print(self.dojo.print_allocations(output))
 
     @docopt_cmd
     def do_print_unallocated(self, args):
 
-        """Usage: print_unallocated [--o=filename]"""
-        if args['--o'] is None:
+        """Usage: print_unallocated [<filename>]"""
+        if args['<filename>'] is None:
             output = None
         else:
-            output = str(args['--o'])
+            output = str(args['<filename>'])
         print(self.dojo.print_unallocated(output))
 
     @docopt_cmd
