@@ -146,6 +146,13 @@ class ReallocateTestCase(unittest.TestCase):
         wrong_reallocation = self.dojo_object.reallocate_person(5048488882, "White")
         self.assertEqual(wrong_reallocation, "Person doesnt exist")
 
+    def test_person_is_not_moved_if_there_destination_is_full(self):
+        for i in range(12):
+            self.dojo_object.add_person("Dominic Bett", "fellow", "N")
+        person_id = self.dojo_object.office_array[0].room_occupants[0].id_key
+        wrong_reallocation = self.dojo_object.reallocate_person(person_id, "White")
+        self.assertEqual(wrong_reallocation, "Destination is full")
+
 
 class Load_People_Test_Case(unittest.TestCase):
 
