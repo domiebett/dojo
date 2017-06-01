@@ -247,10 +247,14 @@ class Dojo():
             string += "\n\tOffice Name: " + room.name + "\n"
             string += "\tOccupants: \n"
             count=1
+            data = [[" ", "Name", "|", "Id"], [" ", "-----", "", "---"]]
             for occupant in room.room_occupants:
-                string += "\t\t" + str(count) + ". " + occupant.name +\
-                          "\t" + str(occupant.id_key) + "\n"
-                count+=1
+                data.append([(str(count) + ". "), occupant.name, "|", str(occupant.id_key)])
+                count += 1
+
+            col_width = [max(map(len, col)) for col in zip(*data)]
+            for row in data:
+                string += "\t\t" + (" ".join((val.ljust(width) for val, width in zip(row, col_width))) + "\n")
 
         string += "\n\tLIVING SPACES\n"
         string += "\t----------------"
@@ -258,10 +262,14 @@ class Dojo():
             string += "\n\tLiving Space Name:" + room.name + "\n"
             string += "\tOccupants: \n"
             count = 1
+            data = [[" ", "Name", "|", "Id"], [" ", "-----", "", "---"]]
             for occupant in room.room_occupants:
-                string += "\t\t" + str(count) + ". " + occupant.name + \
-                          "\t" + str(occupant.id_key) + "\n"
+                data.append([(str(count) + ". "), occupant.name, "|", str(occupant.id_key)])
                 count+=1
+
+            col_width = [max(map(len, col)) for col in zip(*data)]
+            for row in data:
+                string += "\t\t" + (" ".join((val.ljust(width) for val, width in zip(row, col_width))) + "\n")
 
         string += "\n"
 
@@ -283,20 +291,36 @@ class Dojo():
 
         """Returns all unallocated persons"""
 
+
         string = "\nUNALLOCATED: \n"
         string += "\tOFFICES\n"
         string += "\t---------\n"
-        for i in range(len(self.office_unallocated)):
-            string += "\t\t" + str(i + 1) + ". " + \
-                self.office_unallocated[i].name + "\t" + \
-                str(self.office_unallocated[i].id_key) + "\n"
+        data = [[" ", "Name", "|", "Id"], [" ", "-----","", "---"]]
+        count = 1
+
+        for person in self.office_unallocated:
+
+            data.append([(str(count)+". "), person.name, "|", str(person.id_key)])
+            count += 1
+
+        col_width = [max(map(len, col)) for col in zip(*data)]
+        for row in data:
+            string += "\t\t" + (" ".join((val.ljust(width) for val, width in zip(row, col_width))) + "\n")
+
 
         string += "\n\tLIVING SPACES\n"
         string += "\t---------------\n"
-        for i in range(len(self.living_unallocated)):
-            string += "\t\t" + str(i + 1) + ". " + \
-                self.living_unallocated[i].name + "\t" + \
-                str(self.living_unallocated[i].id_key) + "\n"
+        data = [[" ", "Name", "|", "Id"], [" ", "-----", "", "---"]]
+        count = 1
+
+        for person in self.living_unallocated:
+
+            data.append([(str(count)+". "), person.name,"|", str(person.id_key)])
+            count += 1
+
+        col_width = [max(map(len, col)) for col in zip(*data)]
+        for row in data:
+            string += "\t\t" + (" ".join((val.ljust(width) for val, width in zip(row, col_width))) + "\n")
 
         if output is None:
             return string
@@ -323,7 +347,7 @@ class Dojo():
                     person = self.office_unallocated[0]
                     empty_room.add_occupant(person)
                     self.office_unallocated.remove(person)
-                    print(person.name + " has been added to Office " + empty_room.name)
+                    print("\t" + person.name + " has been added to Office " + empty_room.name)
 
         if room_type == "living_space":
 
@@ -336,7 +360,7 @@ class Dojo():
                     person = self.living_unallocated[0]
                     empty_room.add_occupant(person)
                     self.living_unallocated.remove(person)
-                    print(person.name + " has been added to Living Space " + empty_room.name)
+                    print("\t" + person.name + " has been added to Living Space " + empty_room.name)
 
     def reallocate_person(self, person_identifier, room_name):
 
@@ -363,10 +387,15 @@ class Dojo():
 
                 if person_room.room_type == selected_room.room_type:
 
-                    selected_room.add_occupant(selected_person)
-                    person_room.room_occupants.remove(selected_person)
-                    print("\n   " + selected_person.name + " has been reallocated to " +
+
+                    if selected_room.has_space():
+                        selected_room.add_occupant(selected_person)
+                        person_room.room_occupants.remove(selected_person)
+                        print("\n   " + selected_person.name + " has been reallocated to " +
                           selected_room.room_type + " " + selected_room.name + "\n")
+
+                    else:
+                        return "Destination is full"
 
                 else:
                     print("\n   You have to reallocated to similar room types\n")
