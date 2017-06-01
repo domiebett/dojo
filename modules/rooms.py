@@ -3,17 +3,12 @@ from modules.people import Staff
 
 class Room(object):
 
-    global maximum_people
-    maximum_people = 0
-    global room_occupants
-    room_occupants = []
-
     def __init__(self, room_type, name):
 
         self.room_type = room_type
         self.name = name
-        self.maximum_people = maximum_people
-        self.room_occupants = room_occupants
+        self.maximum_people = 0
+        self.room_occupants = []
 
     # Function is imported by Living Space class and Office class
     # to determine if the class has been occupied to the maximum
@@ -21,7 +16,7 @@ class Room(object):
 
     def has_space(self):
 
-        if (len(self.room_occupants) < self.maximum_people):
+        if len(self.room_occupants) < self.maximum_people:
             return True
         return False
 
@@ -31,9 +26,11 @@ class Room(object):
     def add_occupant(self, person):
 
         if not self.has_space():
+            print("This room is full, try another")
             return "This room is full, try another"
-        elif (isinstance(self, LivingSpace)):
-            if (isinstance(person, Staff)):
+        elif isinstance(self, LivingSpace):
+            if isinstance(person, Staff):
+                print("Staff are not allowed in Living Space")
                 return "Staff not allowed in Living Space"
             else:
                 self.room_occupants.append(person)
