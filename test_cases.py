@@ -47,8 +47,8 @@ class CreateRoomTestCase(unittest.TestCase):
         living_array = self.dojo_object.living_space_array
         self.dojo_object.add_room(self.office_room)
         self.dojo_object.add_room(self.living_space_room)
-        self.assertTrue(isinstance(self.office_array[0], Office))
-        self.assertTrue(isinstance(living_array[0], LivingSpace))
+        self.assertIsInstance(self.office_array[0], Office)
+        self.assertIsInstance(living_array[0], LivingSpace)
 
     def test_office_and_livingspace_is_an_instance_of_room(self):
 
@@ -74,13 +74,23 @@ class AddPersonTestCase(unittest.TestCase):
         unallocated = self.dojo_object.living_unallocated
         self.assertEqual(len(unallocated), 1)
 
+    def test_only_fellow_and_staff_allowed(self):
+        illegal_person = self.dojo_object.add_person("Dominic Bett", "boogey_man", "Y")
+        self.assertEqual(illegal_person, "Not allowed")
+
+    def test_function_doesnt_allow_attempt_to_give_staff_living_space(self):
+        illegal_accommodation = self.dojo_object.add_person("Patrick Sacho", "staff", "Y")
+        self.assertEqual(illegal_accommodation, "Wrong allocation")
+
+    def test_only_Y_and_N_accommodation_options_allowed(self):
+        illegal_accommodation = self.dojo_object.add_person("Patrick Sacho", "fellow", "P")
+        self.assertEqual(illegal_accommodation, "Wrong input")
+
 
 class AllocationsTestCase(unittest.TestCase):
     def setUp(self):
         self.dojo_object = Dojo()
         self.commuter = Fellow("Dominic Bett", "N")
-
-    # tests if occupants in rooms are equal to what was input
 
     def test_if_right_number_of_occupants_is_output(self):
         self.dojo_object.create_room("office", ["Blue"])
@@ -92,9 +102,6 @@ class AllocationsTestCase(unittest.TestCase):
 
         self.assertListEqual(names_list, ["Dominic Bett", "Jamie Heineman",
                                           "Grant Imahara"])
-
-    # test print_room functionality doesnt return anything if there were no
-    # rooms with the same name.
 
     def test_finds_no_room_if_no_room_with_name_exists(self):
         print_room = self.dojo_object.print_room("White")
@@ -135,6 +142,11 @@ class ReallocateTestCase(unittest.TestCase):
         wrong_reallocation = self.dojo_object.reallocate_person(50484848111, "Yellow")
         self.assertEqual(wrong_reallocation, "Room doesnt exist")
 
+    def test_only_existing_persons_are_reallocated(self):
+        wrong_reallocation = self.dojo_object.reallocate_person(5048488882, "White")
+        self.assertEqual(wrong_reallocation, "Person doesnt exist")
+
+
 class Load_People_Test_Case(unittest.TestCase):
 
     def setUp(self):
@@ -142,10 +154,10 @@ class Load_People_Test_Case(unittest.TestCase):
 
     def test_correct_number_of_people_are_added_to_room(self):
         self.dojo_object.create_room("office", ["Blue"])
-        self.dojo_object.load_people("test_file")
+        self.dojo_object.load_people("input")
         occupants = self.dojo_object.office_array[0].room_occupants
         self.assertEqual(len(occupants), 5)
 
     def test_returns_message_if_txt_file_doesnt_exist(self):
         no_file = self.dojo_object.load_people("no_file")
-        self.assertEqual(no_file, "File doesnt exist")
+        self.assertEqual(no_file, "File not found")
