@@ -67,6 +67,10 @@ class Dojo():
         """Adds people and assigns them a room. Adds them to the unallocated
         list if no rooms exist"""
 
+        if not person_role=="fellow" and not person_role=="staff":
+            print("\n   The role '" + person_role + "' is not allowed. Only fellows and staff")
+            return "Not allowed"
+
         random_office = self.random_empty_rooms(self.office_array)
         random_living_space = self.random_empty_rooms(self.living_space_array)
         print("\n   " + person_name + " (" + person_role + ")" " has been assigned:")
@@ -77,7 +81,7 @@ class Dojo():
         if random_office == "Full":
 
             print("     Offices are full. Assigning to unallocated")
-            self.append_unallocated_persons(person_name)
+            self.append_unallocated_persons(person_name, person_role)
             random_office_name = "UNALLOCATED !!"
 
         else:
@@ -108,16 +112,29 @@ class Dojo():
                     random_living_space_name = random_living_space.name
                     random_living_space.add_occupant(fellow)
 
-                print("     Living Space: " + random_living_space_name + "\n")
+                print("     Living Space: " + random_living_space_name)
+
+            elif accommodation == "N":
+                print("     No Living Space allocated")
+
+            else:
+                print("     The above option is not allowed")
+                return "Wrong input"
 
         # Adds a staff member to random office with space
 
         if person_role == "staff":
 
             staff = Staff(person_name)
-            random_office.add_occupant(staff)
-            random_office_name = random_office.name
-            print("  Office: " + random_office_name)
+            if not random_office == "Full":
+                random_office.add_occupant(staff)
+                random_office_name = random_office.name
+            print("     Office: " + random_office_name)
+
+            if accommodation == "Y":
+
+                print("     Staff cannot be assigned living space")
+                return "Wrong allocation"
 
     # Calls the room creator
 
@@ -157,7 +174,7 @@ class Dojo():
 
             new_room = Office(room_name)
             self.add_room(new_room)
-            print ("Created office named " + room_name)
+            print("\n   Created office named " + room_name)
 
         if room_type == "living_space":
 
@@ -168,7 +185,7 @@ class Dojo():
 
             new_room = LivingSpace(room_name)
             self.add_room(new_room)
-            print("Created Living Space named " + room_name)
+            print("\n   Created Living Space named " + room_name)
         
         return "Created Successfully"
 
@@ -221,10 +238,7 @@ class Dojo():
 
     def print_allocations(self, output):
 
-        """Prints out all allocations"""
-
-        # Builds a string that contains all the data and either returns
-        # it to be printed or makes a new file with the name in argument.
+        """Returns all allocations"""
 
         string = "\nALLOCATIONS: \n"
         string += "\tOFFICES\n"
@@ -251,12 +265,11 @@ class Dojo():
 
         string += "\n"
 
-        # returns the string to be printed to console.
+        # returns the string to be printed to console or creates txt file
+        # and writes to it.
 
         if output is None:
             return string
-
-        # creates txt file and writes to it.
 
         else:
             file_name = "output/" + output + ".txt"
@@ -265,11 +278,10 @@ class Dojo():
             file_output.close()
             return "File saved to " + file_name + "."
 
-    # prints all unallocated persons
 
     def print_unallocated(self, output):
 
-        # builds string with information for unallocated persons and returns it
+        """Returns all unallocated persons"""
 
         string = "\nUNALLOCATED: \n"
         string += "\tOFFICES\n"
@@ -297,31 +309,38 @@ class Dojo():
             return "File saved to path: '" + file_name + "'."
 
     def assign_unallocated(self, room_type):
+
+        """Automatically allocates unallocated people to rooms if one exists"""
+
         if room_type == "office":
 
-            for person in self.office_unallocated:
+            for i in range(len(self.office_unallocated)):
                 empty_room = self.random_empty_rooms(self.office_array)
 
                 if empty_room == "Full":
                     break
                 else:
+                    person = self.office_unallocated[0]
                     empty_room.add_occupant(person)
                     self.office_unallocated.remove(person)
                     print(person.name + " has been added to Office " + empty_room.name)
 
         if room_type == "living_space":
 
-            for person in self.living_unallocated:
+            for i in range(len(self.living_unallocated)):
                 empty_room = self.random_empty_rooms(self.living_space_array)
 
                 if empty_room == "Full":
                     break
                 else:
+                    person = self.living_unallocated[0]
                     empty_room.add_occupant(person)
                     self.living_unallocated.remove(person)
                     print(person.name + " has been added to Living Space " + empty_room.name)
 
     def reallocate_person(self, person_identifier, room_name):
+
+        """Reallocates person to another room"""
 
         selected_room = "None"
         selected_person = "None"
@@ -346,17 +365,48 @@ class Dojo():
 
                     selected_room.add_occupant(selected_person)
                     person_room.room_occupants.remove(selected_person)
+                    print("\n   " + selected_person.name + " has been reallocated to " +
+                          selected_room.room_type + " " + selected_room.name + "\n")
 
                 else:
                     print("\n   You have to reallocated to similar room types\n")
                     return "Cannot add to room"
 
             else:
-                print("Person doesnt exist")
+                print("   Person doesnt exist")
                 return "Person doesnt exist"
         else:
-            print("Room doesnt exist")
+            print("   Room doesnt exist")
             return "Room doesnt exist"
 
     def load_people(self, file_name):
-        pass
+
+        """Loads people from a text file and adds them to rooms"""
+
+        full_file_name = "input/" + str(file_name) + ".txt"
+        try:
+            data_list = open(full_file_name).readlines()
+            person_name = ""
+            person_role = ""
+            person_accommodation = ""
+
+            for data in data_list:
+                person_data = data.split()
+
+                if len(person_data) >= 3 and len(person_data) <= 4:
+                    person_name = str(person_data[0]) + " " + str(person_data[1])
+                    person_role = str(person_data[2])
+
+                    if len(person_data) == 4:
+                        person_accommodation = str(person_data[3])
+                    else:
+                        person_accommodation = "N"
+
+                    self.add_person(person_name, person_role, person_accommodation)
+
+                else:
+                    print("\n   Data is corrupt, check format and try again")
+
+        except(FileNotFoundError):
+            print("\n    File not found\n")
+            return "File not found"
