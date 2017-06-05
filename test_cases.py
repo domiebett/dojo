@@ -116,7 +116,7 @@ class ReallocateTestCase(unittest.TestCase):
         self.dojo_object.add_person("Darren Kasengo", "fellow", "Y")
         self.dojo_object.create_room("office", ["White"])
 
-    def test_if_reallocate_moves_the_person(self):
+    def test_if_reallocate_is_successful(self):
         reallocated_person = self.dojo_object.office_array[0].room_occupants[0]
         person_id = int(id(reallocated_person))
         self.dojo_object.reallocate_person(person_id, "White")
