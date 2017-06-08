@@ -1,8 +1,8 @@
 import unittest
 
-import os, sys
-dir_path = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(dir_path)
+from os import path
+import sys
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
 from modules.rooms import Room, Office, LivingSpace
 from modules.dojo import Dojo
