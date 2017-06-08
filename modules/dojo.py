@@ -173,7 +173,7 @@ class Dojo():
                     return "Room exists"
 
             new_room = Office(room_name)
-            self.add_room(new_room)
+            self.office_array.append(new_room)
             print("\n   Created office named " + room_name)
 
         if room_type == "living_space":
@@ -184,23 +184,10 @@ class Dojo():
                     return "Room exists"
 
             new_room = LivingSpace(room_name)
-            self.add_room(new_room)
+            self.living_space_array.append(new_room)
             print("\n   Created Living Space named " + room_name)
         
         return "Created Successfully"
-
-    # Adds rooms created in the main module into their
-    # respective arrays above.
-
-    def add_room(self, room):
-
-        """Adds rooms to their respective room array"""
-
-        if isinstance(room, Office):
-            self.office_array.append(room)
-
-        elif isinstance(room, LivingSpace):
-            self.living_space_array.append(room)
 
     # Prints all occupants of the argument passed as room_name
 
@@ -380,13 +367,16 @@ class Dojo():
                     person_room = room
                     room_type = person_room.room_type
                     selected_person = person
-
+        
         if isinstance(selected_room, Room):
 
             if isinstance(selected_person, Person):
+                
+                if person_room.name == room_name:
+                    print("\n   Person is already in the room\n")
+                    return "Wrong reallocation"
 
                 if person_room.room_type == selected_room.room_type:
-
 
                     if selected_room.has_space():
                         selected_room.add_occupant(selected_person)
@@ -398,7 +388,7 @@ class Dojo():
                         return "Destination is full"
 
                 else:
-                    print("\n   You have to reallocated to similar room types\n")
+                    print("\n   You have to reallocate to similar room types\n")
                     return "Cannot add to room"
 
             else:
