@@ -1,8 +1,12 @@
 import unittest
+
+import os, sys
+dir_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(dir_path)
+
 from modules.rooms import Room, Office, LivingSpace
 from modules.dojo import Dojo
 from modules.people import Person, Fellow, Staff
-
 
 class CreateRoomTestCase(unittest.TestCase):
     """Tests for the create_room and add_person functionality"""
@@ -43,11 +47,11 @@ class CreateRoomTestCase(unittest.TestCase):
 
     def test_rooms_are_added_into_correct_array_in_dojo(self):
 
-        self.office_array = self.dojo_object.office_array
+        office_array = self.dojo_object.office_array
         living_array = self.dojo_object.living_space_array
-        self.dojo_object.add_room(self.office_room)
-        self.dojo_object.add_room(self.living_space_room)
-        self.assertIsInstance(self.office_array[0], Office)
+        self.dojo_object.create_room("office", ["Blue"])
+        self.dojo_object.create_room("living_space", ["White"])
+        self.assertIsInstance(office_array[0], Office)
         self.assertIsInstance(living_array[0], LivingSpace)
 
     def test_office_and_livingspace_is_an_instance_of_room(self):
@@ -85,6 +89,23 @@ class AddPersonTestCase(unittest.TestCase):
     def test_only_Y_and_N_accommodation_options_allowed(self):
         illegal_accommodation = self.dojo_object.add_person("Patrick Sacho", "fellow", "P")
         self.assertEqual(illegal_accommodation, "Wrong input")
+
+    def test_person_is_automatically_added_to_empty_room(self):
+        self.dojo_object.add_person("Dominic Bett", "fellow", "Y")
+        self.dojo_object.add_person("Darren Kasengo", "staff", "N")
+        list_length = len(self.dojo_object.office_unallocated)
+        self.assertEqual(list_length, 2)
+        list_length = len(self.dojo_object.living_unallocated)
+        self.assertEqual(list_length, 1)
+
+    def test_person_is_removed_from_unallocated_if_room_exists(self):
+        self.dojo_object.add_person("Dominic Bett", "fellow", "Y")
+        self.dojo_object.add_person("Darren Kasengo", "staff", "N")
+        self.dojo_object.create_room("office", ["White"])
+        office = self.dojo_object.office_array[0]
+        office_unallocated = self.dojo_object.office_unallocated
+        self.assertEqual(len(office.room_occupants), 2)
+        self.assertEqual(len(office_unallocated), 0)
 
 
 class AllocationsTestCase(unittest.TestCase):
@@ -138,7 +159,7 @@ class ReallocateTestCase(unittest.TestCase):
         wrong_reallocation = self.dojo_object.reallocate_person(int(id(occupant1)), "Yellow")
         self.assertEqual(wrong_reallocation, "Cannot add to room")
 
-    def test_only_existing_rooms_are_reallocated(self):
+    def test_reallocation_is_between_existing_rooms(self):
         wrong_reallocation = self.dojo_object.reallocate_person(50484848111, "Yellow")
         self.assertEqual(wrong_reallocation, "Room doesnt exist")
 
@@ -153,6 +174,18 @@ class ReallocateTestCase(unittest.TestCase):
         wrong_reallocation = self.dojo_object.reallocate_person(person_id, "White")
         self.assertEqual(wrong_reallocation, "Destination is full")
 
+    def test_reallocation_is_not_to_same_room(self):
+        occupant1 = self.dojo_object.office_array[0].room_occupants[0]
+        wrong_reallocation = self.dojo_object.reallocate_person(int(id(occupant1)), "Blue")
+        self.assertEqual(wrong_reallocation, "Wrong reallocation")
+    
+    def test_unallocated_person_is_not_reallocated(self):
+        person = Fellow("Dominic Bett")
+        self.dojo_object.office_unallocated.append(person)
+        unallocated1 = self.dojo_object.office_unallocated[0].id_key
+        wrong_reallocation = self.dojo_object.reallocate_person(unallocated1, "Blue")
+        self.assertEqual(wrong_reallocation, "Person doesnt exist")
+
 
 class Load_People_Test_Case(unittest.TestCase):
 
@@ -163,8 +196,13 @@ class Load_People_Test_Case(unittest.TestCase):
         self.dojo_object.create_room("office", ["Blue"])
         self.dojo_object.load_people("input")
         occupants = self.dojo_object.office_array[0].room_occupants
-        self.assertEqual(len(occupants), 5)
+        self.assertEqual(len(occupants), 5, msg="People should be added to room correctly")
 
     def test_returns_message_if_txt_file_doesnt_exist(self):
         no_file = self.dojo_object.load_people("no_file")
-        self.assertEqual(no_file, "File not found")
+        self.assertEqual(no_file, "File not found", msg="File to load from should exist")
+
+    
+
+if __name__ == "__main__":
+    unittest.main()
