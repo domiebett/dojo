@@ -6,7 +6,8 @@ python:
 install: "pip install -r requirements.txt"
 
 script:
-  coverage run --source="modules/","" -m unittest
+
+  coverage run --source="modules/","tests/" -m unittest
 
 after_success:
   coveralls
