@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/DomieBett/Week_Two_Andela_Project_Dojo.svg?branch=develop)](https://travis-ci.org/DomieBett/Week_Two_Andela_Project_Dojo)
 # Week_Two_Andela_Project_Dojo
 
 ## Final project for week two bootcamp
