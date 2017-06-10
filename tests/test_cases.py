@@ -9,7 +9,7 @@ from modules.dojo import Dojo
 from modules.people import Person, Fellow, Staff
 
 class CreateRoomTestCase(unittest.TestCase):
-    """Tests for the create_room and add_person functionality"""
+    """Tests for the create_room and some add_person functionality"""
 
     def setUp(self):
 
@@ -61,6 +61,9 @@ class CreateRoomTestCase(unittest.TestCase):
 
 
 class AddPersonTestCase(unittest.TestCase):
+
+    """Tests for functionalities of the add_person() function in dojo.py"""
+
     def setUp(self):
         self.living_space_room = LivingSpace("Red")
         self.office_room = Office("Blue")
@@ -109,6 +112,9 @@ class AddPersonTestCase(unittest.TestCase):
 
 
 class AllocationsTestCase(unittest.TestCase):
+    
+    """Tests for print_room, print_allocations, and print_unallocated functions"""
+
     def setUp(self):
         self.dojo_object = Dojo()
         self.dojo_object.create_room("office", ["Yellow"])
@@ -156,6 +162,8 @@ class AllocationsTestCase(unittest.TestCase):
         self.assertEqual(string, unallocated_string)
 
 class ReallocateTestCase(unittest.TestCase):
+    
+    """Test the reallocated_person() function in dojo.py"""
 
     def setUp(self):
         self.dojo_object = Dojo()
@@ -215,6 +223,8 @@ class ReallocateTestCase(unittest.TestCase):
 
 
 class Load_People_Test_Case(unittest.TestCase):
+    
+    """Tests the load_people function in dojo.py"""
 
     def setUp(self):
         self.dojo_object = Dojo()
@@ -228,6 +238,45 @@ class Load_People_Test_Case(unittest.TestCase):
     def test_returns_message_if_txt_file_doesnt_exist(self):
         no_file = self.dojo_object.load_people("no_file")
         self.assertEqual(no_file, "File not found", msg="File to load from should exist")
+
+
+class PeopleTestCase(unittest.TestCase):
+    
+    """Test the entire Person, Fellow and Staff objects"""
+    
+    def setUp(self):
+        self.fellow = Fellow("Dominic Bett", "Y")
+        self.staff = Staff("Dominic Bett")
+
+    def test_if_gender_is_assigned(self):
+        self.fellow.set_gender("Female")
+        self.staff.set_gender("Male")
+        self.assertEqual(self.fellow.gender, "Female")
+        self.assertEqual(self.staff.gender, "Male")
+    
+    def test_if_age_is_assingned(self):
+        self.fellow.set_age(21)
+        self.staff.set_age(20)
+        self.assertEqual(self.fellow.age, 21)
+        self.assertEqual(self.staff.age, 20)
+    
+    def test_error_message_returned_gender_or_age_not_assigned(self):
+        self.assertEqual(self.fellow.get_gender(), "Gender not assigned")
+        self.assertEqual(self.fellow.get_age(), "Age not assigned")
+    
+    def test_age_and_gender_is_returned(self):
+        self.fellow.set_gender("Male")
+        self.staff.set_age(22)
+        gender = self.fellow.get_gender()
+        age = self.staff.get_age()
+        self.assertEqual(gender, "Male")
+        self.assertEqual(age, 22)
+    
+    def test_error_message_if_wrong_format_is_set(self):
+        wrong_assignment = self.fellow.set_age("Twenty One")
+        self.assertEqual(wrong_assignment, "Should be a number")
+        wrong_assignment = self.fellow.set_gender(474747)
+        self.assertEqual(wrong_assignment, "Should be a string")
 
 if __name__ == "__main__":
     unittest.main()
