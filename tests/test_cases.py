@@ -111,6 +111,8 @@ class AddPersonTestCase(unittest.TestCase):
 class AllocationsTestCase(unittest.TestCase):
     def setUp(self):
         self.dojo_object = Dojo()
+        self.dojo_object.create_room("office", ["Yellow"])
+        self.dojo_object.create_room("living_space", ["Red"])
         self.commuter = Fellow("Dominic Bett", "N")
 
     def test_if_right_number_of_occupants_is_output(self):
@@ -127,6 +129,31 @@ class AllocationsTestCase(unittest.TestCase):
     def test_finds_no_room_if_no_room_with_name_exists(self):
         print_room = self.dojo_object.print_room("White")
         self.assertEqual(print_room, "No room exists")
+
+    def test_only_fellow_and_staff_are_allowed_during_automatic_allocation(self):
+        wrong_allocation = self.dojo_object.append_unallocated_persons("Dominic Bett", "ninja")
+        self.assertEqual(wrong_allocation, "No such specification")
+
+    def test_print_empty_room_return_empty_result(self):
+        string = "\nAllocation: \n"
+        string += "\t Room Name: Yellow" + \
+            " (office).\n"
+
+        string += "\t Occupants:"
+        string += "\n"
+        
+        func_string = self.dojo_object.print_room("Yellow")
+        self.assertEqual(string, func_string)
+
+    def test_print_allocations_outputs_to_file(self):
+        string = "File saved to output/tests.txt."
+        allocation_string = self.dojo_object.print_allocations("tests")
+        self.assertEqual(string, allocation_string)
+
+    def test_print_unallocated_outputs_to_file(self):
+        string = "File saved to path: 'output/tests.txt'."
+        unallocated_string = self.dojo_object.print_unallocated("tests")
+        self.assertEqual(string, unallocated_string)
 
 class ReallocateTestCase(unittest.TestCase):
 
@@ -201,8 +228,6 @@ class Load_People_Test_Case(unittest.TestCase):
     def test_returns_message_if_txt_file_doesnt_exist(self):
         no_file = self.dojo_object.load_people("no_file")
         self.assertEqual(no_file, "File not found", msg="File to load from should exist")
-
-    
 
 if __name__ == "__main__":
     unittest.main()
