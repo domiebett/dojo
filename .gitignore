@@ -5,3 +5,4 @@ output/
 .cache
 .idea
 __pycache__/
+.coverage
