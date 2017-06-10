@@ -59,12 +59,10 @@ class Dojo():
         elif room == "L":
             self.living_unallocated.append(person)
 
-    # Function creates a person object by instantiating the person role
-    # class, i.e Fellow or Staff
 
     def add_person(self, person_name, person_role, accommodation):
 
-        """Adds people and assigns them a room. Adds them to the unallocated
+        """Creates people and assigns them a room. Adds them to the unallocated
         list if no rooms exist"""
 
         if not person_role=="fellow" and not person_role=="staff":
@@ -404,7 +402,8 @@ class Dojo():
 
         full_file_name = "input/" + str(file_name) + ".txt"
         try:
-            data_list = open(full_file_name).readlines()
+            input_file = open(full_file_name)
+            data_list = input_file.readlines()
             person_name = ""
             person_role = ""
             person_accommodation = ""
@@ -422,10 +421,11 @@ class Dojo():
                         person_accommodation = "N"
 
                     self.add_person(person_name, person_role, person_accommodation)
-
                 else:
                     print("\n   Data is corrupt, check format and try again")
-
+            
+            input_file.close()
+            
         except(FileNotFoundError):
             print("\n    File not found\n")
             return "File not found"
