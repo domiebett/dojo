@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/DomieBett/Week_Two_Andela_Project_Dojo.svg?branch=develop)](https://travis-ci.org/DomieBett/Week_Two_Andela_Project_Dojo)
+
+[![Coverage Status](https://coveralls.io/repos/github/DomieBett/Week_Two_Andela_Project_Dojo/badge.svg?branch=master)](https://coveralls.io/github/DomieBett/Week_Two_Andela_Project_Dojo?branch=master)
 # Week_Two_Andela_Project_Dojo
 
 ## Final project for week two bootcamp
