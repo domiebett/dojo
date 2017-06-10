@@ -2,6 +2,9 @@ from modules.people import Staff
 
 
 class Room(object):
+    
+    """Is a room object which contains functions to be imported by
+    livingspace and office objects"""
 
     def __init__(self, room_type, name):
 
@@ -10,20 +13,18 @@ class Room(object):
         self.maximum_people = 0
         self.room_occupants = []
 
-    # Function is imported by Living Space class and Office class
-    # to determine if the class has been occupied to the maximum
-    # capacity.
-
     def has_space(self):
+        
+        """Checks if room has space or if it is full"""
 
         if len(self.room_occupants) < self.maximum_people:
             return True
         return False
 
-    # Adds occupants to the rooms. Checks if occupant is Staff and
-    # denies them access to LivingSpace
-
     def add_occupant(self, person):
+
+        """Adds occupants to the rooms. Also checks if occupant is Staff 
+        and denies them access to the Living Space"""
 
         if not self.has_space():
             print("This room is full, try another")
@@ -40,8 +41,7 @@ class Room(object):
 
 class LivingSpace(Room):
 
-    #Initialises variables, which represent maximum capacity
-    #of the living space and current number of occupants in the living space.
+    """Creates a Living Space object for fellows in the Dojo Facilities"""
 
     def __init__(self, name):
 
@@ -53,8 +53,7 @@ class LivingSpace(Room):
 
 class Office(Room):
 
-    #Initialises variables, which represent maximum capacity
-    #of the living space and current number of occupants in the living space.
+    """Creates Offices for the Dojo Facility"""
 
     def __init__(self, name):
 
