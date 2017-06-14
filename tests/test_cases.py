@@ -319,11 +319,7 @@ class DatabaseTestCase(unittest.TestCase):
     def test_if_save_state_is_successful(self):
         success = self.dojo_for_save.save_state("tests.db")
         self.assertEqual(success, "Success")
-
-    def test_conflicting_rooms_are_still_added(self):
-        self.dojo_object.load_state("tests.db")
-        room_conflict = self.dojo_object.load_state("tests.db")
-        self.assertEqual(room_conflict, "Room conflict")
+        self.assertTrue(os.path.exists("tests.db"))
 
     def test_unallocated_persons_are_retrieved_successfully(self):
         self.dojo_object.load_state("tests.db")
