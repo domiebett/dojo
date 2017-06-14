@@ -1,5 +1,6 @@
 import unittest
 
+import os
 from os import path
 import sys
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
@@ -110,6 +111,12 @@ class AddPersonTestCase(unittest.TestCase):
         self.assertEqual(len(office.room_occupants), 2)
         self.assertEqual(len(office_unallocated), 0)
 
+    def test_person_is_assigned_right_room(self):
+        self.dojo_object.create_room("office", ["White"])
+        self.dojo_object.add_person("Dominic Bett", "fellow", "N")
+        office_name = self.dojo_object.office_array[0].room_occupants[0].office_name
+        self.assertEqual(office_name, "White")
+
 
 class AllocationsTestCase(unittest.TestCase):
     
@@ -150,6 +157,13 @@ class AllocationsTestCase(unittest.TestCase):
         
         func_string = self.dojo_object.print_room("Yellow")
         self.assertEqual(string, func_string)
+
+    def test_automatically_allocated_person_is_assingned_the_right_room_name(self):
+        for i in range(8):
+            self.dojo_object.add_person("Dominic Bett", "fellow", "N")
+        self.dojo_object.create_room("office", ["Green"])
+        person = self.dojo_object.office_array[1].room_occupants[0]
+        self.assertEqual(person.office_name, "Green")
 
     def test_print_allocations_outputs_to_file(self):
         string = "File saved to output/tests.txt."
@@ -192,7 +206,7 @@ class ReallocateTestCase(unittest.TestCase):
         self.dojo_object.create_room("living_space", ["Yellow"])
         occupant1 = self.dojo_object.office_array[0].room_occupants[0]
         wrong_reallocation = self.dojo_object.reallocate_person(int(id(occupant1)), "Yellow")
-        self.assertEqual(wrong_reallocation, "Cannot add to room")
+        self.assertEqual(wrong_reallocation, "Person doesnt exist")
 
     def test_reallocation_is_between_existing_rooms(self):
         wrong_reallocation = self.dojo_object.reallocate_person(50484848111, "Yellow")
@@ -220,6 +234,12 @@ class ReallocateTestCase(unittest.TestCase):
         unallocated1 = self.dojo_object.office_unallocated[0].id_key
         wrong_reallocation = self.dojo_object.reallocate_person(unallocated1, "Blue")
         self.assertEqual(wrong_reallocation, "Person doesnt exist")
+
+    def test_if_right_room_name_is_assigned_to_person(self):
+        person = self.dojo_object.office_array[0].room_occupants[0]
+        self.dojo_object.reallocate_person(person.id_key, "White")
+        person = self.dojo_object.office_array[1].room_occupants[0]
+        self.assertEqual(person.office_name, "White")
 
 
 class Load_People_Test_Case(unittest.TestCase):
@@ -278,5 +298,47 @@ class PeopleTestCase(unittest.TestCase):
         wrong_assignment = self.fellow.set_gender(474747)
         self.assertEqual(wrong_assignment, "Should be a string")
 
+class DatabaseTestCase(unittest.TestCase):
+    
+    """Tests database functionality: save_state and load_state"""
+
+    def setUp(self):
+        self.dojo_for_save = Dojo()
+        self.dojo_for_save.create_room("office", ["White", "Blue"])
+        self.dojo_for_save.create_room("living_space", ["Red", "Black"])
+        for i in range(10):
+            self.dojo_for_save.add_person("Dominic Bett", "fellow", "Y")
+            self.dojo_for_save.add_person("Darren Kasengo", "staff")
+        self.dojo_for_save.save_state("tests.db")
+        self.dojo_object = Dojo()
+        
+    def tearDown(self):
+        if os.path.exists("tests.db"):
+            os.remove("tests.db")
+
+    def test_if_save_state_is_successful(self):
+        success = self.dojo_for_save.save_state("tests.db")
+        self.assertEqual(success, "Success")
+
+    def test_conflicting_rooms_are_still_added(self):
+        self.dojo_object.load_state("tests.db")
+        room_conflict = self.dojo_object.load_state("tests.db")
+        self.assertEqual(room_conflict, "Room conflict")
+
+    def test_unallocated_persons_are_retrieved_successfully(self):
+        self.dojo_object.load_state("tests.db")
+        office_unallocated_len = len(self.dojo_object.office_unallocated)
+        living_unallocated_len = len(self.dojo_object.living_unallocated)
+        quantity_array = [office_unallocated_len, living_unallocated_len]
+        self.assertListEqual(quantity_array, [8, 2])
+
+    def test_room_occupants_are_retrieved_successfully(self):
+        self.dojo_object.load_state("tests.db")
+        self.assertFalse(self.dojo_object.office_array[0].has_space())
+        self.assertFalse(self.dojo_object.office_array[1].has_space())
+        self.assertFalse(self.dojo_object.living_space_array[0].has_space())
+        self.assertFalse(self.dojo_object.living_space_array[1].has_space())
+
+            
 if __name__ == "__main__":
     unittest.main()
