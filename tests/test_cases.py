@@ -1,4 +1,5 @@
 import unittest
+from unittest import mock
 
 import os
 from os import path
@@ -298,6 +299,25 @@ class PeopleTestCase(unittest.TestCase):
         wrong_assignment = self.fellow.set_gender(474747)
         self.assertEqual(wrong_assignment, "Should be a string")
 
+
+class RoomsTestCase(unittest.TestCase):
+    """Test all Room, Office, LivingSpace objects"""
+
+    def setUp(self):
+        self.office = Office("Office_Name")
+        self.living_space = LivingSpace("Living_Name")
+    
+    def test_has_space_and_add_occupant_function(self):
+        self.assertTrue(self.office.has_space())
+        self.assertTrue(self.living_space.has_space())
+        for i in range(6):
+            person = Fellow("Dom Bett")
+            self.office.add_occupant(person)
+            self.living_space.add_occupant(person)
+        self.assertFalse(self.office.has_space())
+        self.assertFalse(self.living_space.has_space())
+
+
 class DatabaseTestCase(unittest.TestCase):
     
     """Tests database functionality: save_state and load_state"""
@@ -334,7 +354,72 @@ class DatabaseTestCase(unittest.TestCase):
         self.assertFalse(self.dojo_object.office_array[1].has_space())
         self.assertFalse(self.dojo_object.living_space_array[0].has_space())
         self.assertFalse(self.dojo_object.living_space_array[1].has_space())
+    
+    def test_return_message_if_database_doesnt_exist(self):
+        database = "nonexistent.db"
+        if os.path.exists(database):
+            os.path.remove(database0)
+        wrong_retrieval = self.dojo_object.load_state(database)
+        self.assertEqual("No database", wrong_retrieval)
+    
+    @mock.patch('builtins.input', side_effect=['database'])
+    def test_database_overwrites_room(self, input):
+        self.dojo_object.create_room("office", ["White"])
+        self.dojo_object.load_state("tests.db")
+        people = self.dojo_object.office_array[0].room_occupants
+        self.assertEqual(len(people), 6)
 
+    @mock.patch('builtins.input', side_effect=['system'])
+    def test_system_keeps_system_files(self, input):
+        self.dojo_object.create_room("office", ["White"])
+        self.dojo_object.load_state("tests.db")
+        people = self.dojo_object.office_array[0].room_occupants
+        self.assertEqual(len(people), 0)
+
+
+class DeleteTestCase(unittest.TestCase):
+    
+    """Tests the delete person or room functionality"""
+
+    def setUp(self):
+        self.dojo = Dojo()
+        self.dojo.create_room("office", ["Blue"])
+        self.dojo.create_room("living_space", ["White"])
+        self.dojo.add_person("Dominic Bett", "fellow", "Y")
+        self.dojo.add_person("Dan Katana", "fellow", "Y")
+        self.dojo.add_person("Darren Kasengo", "staff")
+        self.dojo.create_room("office", ["Yellow"])
+
+    def test_if_person_is_deleted(self):
+        person = self.dojo.office_array[0].room_occupants[0]
+        self.dojo.delete_object("person", person.id_key)
+        self.assertEqual(len(self.dojo.office_array[0].room_occupants), 2)
+    
+    def test_if_room_is_deleted(self):
+        self.dojo.delete_object("room", "Yellow")
+        self.assertEqual(len(self.dojo.office_array), 1)
+
+    def test_if_person_identifier_is_not_integer(self):
+        wrong_delete = self.dojo.delete_object("person", "Whodiss..!!")
+        self.assertEqual(wrong_delete, "Not integer")
+    
+    def test_only_person_from_one_room_is_deleted(self):
+        people = self.dojo.office_array[0].room_occupants
+        self.dojo.delete_object("person", people[0].id_key, "office")
+        self.assertEqual(len(self.dojo.office_array[0].room_occupants), 2)
+        self.assertEqual(len(self.dojo.living_space_array[0].room_occupants), 2)
+    
+    def test_returns_error_if_object_doesnt_exist(self):
+        wrong_delete = self.dojo.delete_object("elChapo", "Nothing")
+        self.assertEqual(wrong_delete, "Wrong object")
+
+    def test_person_in_multiple_rooms_deleted_if_option_specified(self):
+        person = self.dojo.office_array[0].room_occupants[0]
+        self.dojo.delete_object("person", person.id_key, "all")
+        living_occupants = self.dojo.living_space_array[0].room_occupants
+        office_occupants = self.dojo.office_array[0].room_occupants
+        self.assertEqual(len(living_occupants), 1)
+        self.assertEqual(len(office_occupants), 2)
             
 if __name__ == "__main__":
     unittest.main()
