@@ -1,5 +1,3 @@
-import base64
-
 
 class Person(object):
     """Creates a Person who can either be a Fellow or Staff"""
@@ -12,6 +10,7 @@ class Person(object):
         self.living_space = living_space
         self.gender = None
         self.age = None
+        self.office_name = "None"
 
     def set_gender(self, gender):
         """Sets the gender of the person"""
@@ -49,8 +48,9 @@ class Fellow(Person):
 
         super().__init__(name, role="Fellow")
         self.name = name
-        self.role = "Fellow"
+        self.role = "fellow"
         self.living_space = living_space
+        self.living_space_name = "None"
 
 
 class Staff(Person):
@@ -60,4 +60,4 @@ class Staff(Person):
 
         super().__init__(name, role="Staff")
         self.name = name
-        self.role = "Staff"
+        self.role = "staff"
