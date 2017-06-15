@@ -6,6 +6,10 @@ from modules.rooms import Room, Office, LivingSpace
 from modules.people import Person, Fellow, Staff
 from modules.database import People, Rooms, Unallocated, Base
 
+from tools.tools import is_int
+from tools.tools import get_input
+from tools.tools import random_empty_rooms
+
 import random
 import os
 from os import path
@@ -27,42 +31,6 @@ class Dojo():
         self.office_unallocated = []
         self.living_unallocated = []
 
-    def random_empty_rooms(self, array):
-        """Generates a random room with space for allocation. Takes either
-        office or living_space array as arguments"""
-
-        empty_rooms = []
-
-        for a in array:
-            if a.has_space():
-                empty_rooms.append(a)
-
-        # returns "Full if all the rooms are full"
-
-        if len(empty_rooms) <= 0:
-            return "Full"
-
-        # select a random room.
-
-        random_room = random.choice(empty_rooms)
-        return random_room
-
-    def append_unallocated_persons(self, person_name, person_role="fellow", room="O"):
-        """Appends people not allocated to any room to unallocated lists"""
-
-        person = ""
-        if person_role == "fellow":
-            person = Fellow(person_name)
-        elif person_role == "staff":
-            person = Staff(person_name)
-        else:
-            return "No such specification"
-
-        if room == "O":
-            self.office_unallocated.append(person)
-        elif room == "L":
-            self.living_unallocated.append(person)
-
     def add_person(self, person_name, person_role, accommodation="N"):
         """Creates people and assigns them a room. Adds them to the unallocated
         list if no rooms exist"""
@@ -72,8 +40,8 @@ class Dojo():
                   "' is not allowed. Only fellows and staff")
             return "Not allowed"
 
-        random_office = self.random_empty_rooms(self.office_array)
-        random_living_space = self.random_empty_rooms(self.living_space_array)
+        random_office = random_empty_rooms(self.office_array)
+        random_living_space = random_empty_rooms(self.living_space_array)
         print("\n   " + person_name +
               " (" + person_role + ")" " has been assigned:")
 
@@ -141,6 +109,22 @@ class Dojo():
                 print("     Staff cannot be assigned living space")
                 return "Wrong allocation"
 
+    def append_unallocated_persons(self, person_name, person_role="fellow", room="O"):
+        """Appends people not allocated to any room to unallocated lists"""
+
+        person = ""
+        if person_role == "fellow":
+            person = Fellow(person_name)
+        elif person_role == "staff":
+            person = Staff(person_name)
+        else:
+            return "No such specification"
+
+        if room == "O":
+            self.office_unallocated.append(person)
+        elif room == "L":
+            self.living_unallocated.append(person)
+
     def create_room(self, room_type, room_names):
         """Calls the room creator method with room type and an array
         of room names as arguments"""
@@ -191,8 +175,6 @@ class Dojo():
 
         return "Created Successfully"
 
-    # Prints all occupants of the argument passed as room_name
-
     def print_room(self, room_name):
         """Prints occupants in room with name parsed as argument"""
 
@@ -222,8 +204,6 @@ class Dojo():
                 string += "\n"
                 return string
 
-    # Used to print all allocations for all rooms in the Andela dojo.
-
     def print_allocations(self, output):
         """Returns a string with all allocations in office and living_spaces"""
 
@@ -238,7 +218,7 @@ class Dojo():
             data = [[" ", "Name", "|", "Id"], [" ", "-----", "", "---"]]
 
             # Arranges occupant information into a list which is then appended
-            # to the data list to be used to display data to console.
+            # to the 'data' list to be used to display data to console.
 
             for occupant in room.room_occupants:
                 data.append([(str(count) + ". "), occupant.name,
@@ -289,7 +269,8 @@ class Dojo():
             return "File saved to " + file_name + "."
 
     def print_unallocated(self, output):
-        """Returns all unallocated persons either printed to console or to text file"""
+        """Returns all unallocated persons either printed to console or
+        to text file"""
 
         string = "\nUNALLOCATED: \n"
         string += "\tOFFICES\n"
@@ -340,7 +321,7 @@ class Dojo():
         if room_type == "office":
 
             for i in range(len(self.office_unallocated)):
-                empty_room = self.random_empty_rooms(self.office_array)
+                empty_room = random_empty_rooms(self.office_array)
 
                 if empty_room == "Full":
                     break
@@ -355,7 +336,7 @@ class Dojo():
         if room_type == "living_space":
 
             for i in range(len(self.living_unallocated)):
-                empty_room = self.random_empty_rooms(self.living_space_array)
+                empty_room = random_empty_rooms(self.living_space_array)
 
                 if empty_room == "Full":
                     break
@@ -545,7 +526,8 @@ class Dojo():
             session.add(db_unallocated)
 
         session.commit()
-        print("   Unallocated persons have been added to the database successfully\n")
+        print("   Unallocated persons have been added to the database\
+            successfully\n")
 
         if os.path.exists(database):
             return "Success"
@@ -639,6 +621,10 @@ class Dojo():
             else:
                 print("   There are no unallocated people in database")
 
+        else:
+            print("There is no database named " + database)
+            return "No database"
+
     def add_to_room(self, person, room_name, array):
         """Finds room with name that matches argument 'room_name' and adds
         person to it"""
@@ -657,6 +643,8 @@ class Dojo():
         merged_array = self.office_array + self.living_space_array
         room_to_replace = None
 
+        # Checks if room exist
+
         for temp_room in rooms_array:
             room_conflict = False
 
@@ -667,12 +655,15 @@ class Dojo():
                     room_to_replace = room
                     break
 
+            # If room exists then gives option to keep or overwrite system data
+
             if room_conflict:
                 print("\n   There is conflict. Room named " +
                       dbroom_name + " exists in system")
                 print(
-                    "   Which version would you like to keep? \n   Type 'skip' to keep all system files")
-                response = input(
+                    "   Which version would you like to keep?\
+                     \n   Type 'skip' to keep all system files")
+                response = get_input(
                     "      Enter ['database'], ['system'] or ['skip'] >> ")
 
                 if str(response) == "database":
@@ -702,3 +693,69 @@ class Dojo():
                     self.office_array.append(temp_room)
                 elif temp_room.room_type == "living_space":
                     self.living_space_array.append(temp_room)
+
+    def delete_object(self, del_object, identifier, selector="all"):
+        """Deletes either room or person. Room's identifier is room name while
+        person identifier is his id_key. selector gives options to delete from 
+        the office, living_space or unallocated, or all"""
+
+        merged_array = self.office_array + self.living_space_array
+
+        if del_object == "room":
+
+            for room in merged_array:
+                if room.name == identifier:
+                    if room.room_type == "office":
+                        self.office_array.remove(room)
+                        print("Room named " + room.name + " has been deleted.")
+                        return "Success"
+                    elif room.room_type == "living_space":
+                        self.living_space_array.remove(room)
+                        print("Room named " + room.name +
+                              " has been deleted from " + room.room_type + "s")
+                        return "Success"
+
+        elif del_object == "person":
+
+            if not is_int(identifier):
+                print("    To delete a person identifier needs to be an integer")
+                return "Not integer"
+
+            if selector == "office":
+                self.delete_from_room(self.office_array, identifier)
+            elif selector == "living_space":
+                self.delete_from_room(self.living_space_array, identifier)
+            elif selector == "unallocated":
+                self.delete_from_unallocated(
+                    self.office_unallocated, identifier)
+                self.delete_from_unallocated(
+                    self.living_unallocated, identifier)
+            elif selector == "all":
+                self.delete_from_room(self.office_array, identifier)
+                self.delete_from_room(self.living_space_array, identifier)
+                self.delete_from_unallocated(
+                    self.office_unallocated, identifier)
+                self.delete_from_unallocated(
+                    self.living_unallocated, identifier)
+
+        else:
+            print("Command not supported, you can only delete 'person' and 'room'")
+            return "Wrong object"
+
+    def delete_from_room(self, array, identifier):
+        """Used to delete people from specific rooms"""
+
+        for room in array:
+            for occupant in room.room_occupants:
+                if occupant.id_key == int(identifier):
+                    room.room_occupants.remove(occupant)
+                    print("Occupant " + occupant.name +
+                          " has been deleted from " + room.room_type + " " + room.name)
+
+    def delete_from_unallocated(self, array, identifier):
+        """Used to delete unallocated people"""
+
+        for person in array:
+            if person.id_key == int(identifier):
+                array.remove(person)
+                print("Removed " + person.name + " from waiting list")
