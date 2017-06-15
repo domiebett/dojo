@@ -9,7 +9,7 @@ install:
 
 script:
 
-  coverage run tests/test_cases.py
+  coverage run --source=modules/ tests/test_cases.py
 
 after_success:
   coveralls
