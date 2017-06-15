@@ -30,5 +30,8 @@ It also contains this README.md file.
 5. print_unallocated >> output to text file if filename option is given, else prints all unallocated person to the console.
 6. reallocate_person >> moves person with specified id to specified room
 7. load_people >> Loads people from a txt file with the specified name. Txt files are found in the 'input' folder
+8. save_state >> Saves data to a database of a given name or to default.db if no name has been given.
+9. load_state >> Loads data from the database using the SQLAlchemy library.
+10. delete >> Delete either room or person with identifier passed
 
 Check Usage docs in main.py for a full understanding of the arguments to be passed.
