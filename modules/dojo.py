@@ -263,10 +263,12 @@ class Dojo():
 
         else:
             file_name = "output/" + output + ".txt"
-            file_output = open(file_name, "w")
-            file_output.write(string)
-            file_output.close()
-            return "File saved to " + file_name + "."
+            # with open(os.path.join(os.path.dirname(__file__), file_name), 'w') as file_output:
+            with open(file_name, 'w') as file_output:
+                file_output = open(file_name, "w")
+                file_output.write(string)
+                file_output.close()
+                return "File saved to " + file_name + "."
 
     def print_unallocated(self, output):
         """Returns all unallocated persons either printed to console or
@@ -310,10 +312,11 @@ class Dojo():
 
         else:
             file_name = "output/" + output + ".txt"
-            file_output = open(file_name, "w")
-            file_output.write(string)
-            file_output.close()
-            return "File saved to path: '" + file_name + "'."
+            with open(file_name, 'w') as file_output:
+                file_output = open(file_name, "w")
+                file_output.write(string)
+                file_output.close()
+                return "File saved to path: '" + file_name + "'."
 
     def assign_unallocated(self, room_type):
         """Automatically allocates unallocated people to rooms if one exists"""
