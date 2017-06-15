@@ -6,3 +6,4 @@ output/
 .idea
 __pycache__/
 .coverage
+*.db
