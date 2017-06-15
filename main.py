@@ -8,6 +8,9 @@ main.py>> print_unallocated [<file_name>]
 main.py>> print_room <room_name>
 main.py>> reallocate_person <person_ID> <room_name>
 main.py>> load_people <file_name>
+main.py>> save_state [--db=<database>]
+main.py>> load_state [<database>]
+main.py>> delete <object> <identifier>
 main.py>> quit
 main.py>> (-i | --interactive)
 main.py>> (-h | --help)
@@ -27,7 +30,6 @@ init(strip=not sys.stdout.isatty())
 
 
 def docopt_cmd(func):
-
     """
     This decorator is used to simplify the try/except block and pass the result
     of the docopt parsing to the called action.
@@ -63,7 +65,7 @@ def docopt_cmd(func):
 class FrontDojo(cmd.Cmd):
 
     header = "  D O J O  "
-    cprint(figlet_format(header, font="starwars"), "green")
+    cprint(figlet_format(header, font="roman"), "green")
     intro = """
       ANDELA. BECOME OVERCOME PROSPER   """
     cprint(figlet_format(intro, font='digital'), "white")
@@ -74,13 +76,11 @@ class FrontDojo(cmd.Cmd):
 
     @docopt_cmd
     def do_create_room(self, arg):
-
         """Usage: create_room <room_type> <room_name>..."""
         self.dojo.create_room(arg['<room_type>'].lower(), arg['<room_name>'])
 
     @docopt_cmd
     def do_add_person(self, arg):
-
         """Usage: add_person <first_name> <last_name> <person_role> [<wants_accommodation>]"""
         person_name = arg['<first_name>'] + ' ' + arg['<last_name>']
         if arg['<wants_accommodation>'] is None:
@@ -92,13 +92,11 @@ class FrontDojo(cmd.Cmd):
 
     @docopt_cmd
     def do_find_userid(self, arg):
-
         """Usage: find_userid <first_name> <last_name>"""
         print("Feature not implemented. Stay tuned for future release")
 
     @docopt_cmd
     def do_reallocate_person(self, arg):
-
         """Usage: reallocate_person <person_ID> <room_name>"""
         person_id = arg['<person_ID>']
         room_name = arg['<room_name>']
@@ -106,14 +104,12 @@ class FrontDojo(cmd.Cmd):
 
     @docopt_cmd
     def do_load_people(self, arg):
-
         """Usage: load_people <filename>"""
         file_name = arg['<filename>']
         self.dojo.load_people(file_name)
 
     @docopt_cmd
     def do_print_allocations(self, args):
-
         '''Usage: print_allocations [<filename>]'''
         if args['<filename>'] is None:
             output = None
@@ -124,7 +120,6 @@ class FrontDojo(cmd.Cmd):
 
     @docopt_cmd
     def do_print_unallocated(self, args):
-
         """Usage: print_unallocated [<filename>]"""
         if args['<filename>'] is None:
             output = None
@@ -134,26 +129,45 @@ class FrontDojo(cmd.Cmd):
 
     @docopt_cmd
     def do_print_room(self, arg):
-
         """Usage: print_room <room_name>"""
         print(self.dojo.print_room(arg['<room_name>']))
 
     @docopt_cmd
     def do_save_state(self, args):
+        """Usage: save_state [--db=<database>]"""
+        if args['--db'] is None:
+            database = None
+        else:
+            database = str(args['--db'])
 
-        """Usage: save_state [--db=<sqlite_database>]"""
-        print("Feature not implemented. Stay tuned for future release")
+        self.dojo.save_state(database)
 
     @docopt_cmd
     def do_load_state(self, args):
+        """Usage: load_state [<database>]"""
+        if args['<database>'] is None:
+            database = None
+        else:
+            database = str(args['<database>'])
 
-        """Usage: load_state [--db=<sqlite_database>]"""
-        print("Feature not implemented. Stay tuned for future release")
+        self.dojo.load_state(database)
+
+    @docopt_cmd
+    def do_delete(self, arg):
+        """Usage: delete <object> <identifier> [<selector>]"""
+
+        obj = arg['<object>']
+        identifier = arg['<identifier>']
+        if arg['<selector>'] is None:
+            selector = "all"
+        else:
+            selector = arg['<selector>']
+
+        self.dojo.delete_object(obj, identifier, selector)
 
     def do_quit(self, arg):
-
         """Usage: quit"""
-        print('System closed.')
+        print('\n   System closed. Good Bye...!!!\n')
         exit()
 
 
