@@ -6,7 +6,7 @@
 This repository contains files for the final Andela Bootcamp Cohort 18 Project, Creating an office or living space room allocation sofware for joining Andela Fellows or Andela Staff Members.
 
 
-##Starting Up on system
+## Starting Up on system
 
 I assume you already have git, python and pip package installer installed. Install virtualenv:
 
