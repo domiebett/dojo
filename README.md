@@ -4,7 +4,37 @@
 ## Final project for week two bootcamp
 
 This repository contains files for the final Andela Bootcamp Cohort 18 Project, Creating an office or living space room allocation sofware for joining Andela Fellows or Andela Staff Members.
-It has a:
+
+##Starting Up on system
+
+I assume you already have git, python and pip package isntaller installed. Install virtualenv:
+
+>pip install virtualenv
+
+Make a project directory and navigate to it:
+
+>mkdir ~/Projects
+
+>cd ~/Projects
+
+Clone repository:
+
+>git clone https://github.com/DomieBett/Week_Two_Andela_Project_Dojo.git
+
+Navigate into project directory:
+
+>cd Week_Two_Andela_Project_Dojo
+
+Set up a virtual environment:
+
+>virtualenv --python=python3 env
+
+Activate virtual environment:
+
+>source env/bin/activate
+
+
+The repo has:
 
 1. main.py	-Contains functions parsing the docopt command line arguments and calling respective function
 
@@ -13,14 +43,27 @@ modules folder with the following modules:
 1. dojo.py	-Contains Dojo class with lists for rooms and functions for accessing database.
 2. rooms.py -Contains Room object holding with list containing its occupants (Person objects)
 3. people.py -Contains Person object used as a template for Fellows and Staff.
+4. database.py - Contains class models for purpose of saving to database.
+
+tools folder with the following modules:
+
+1. tools.py -Contains simple functions that are regularly used in systems. 
 
 
 ## Test Files
 
- 1. test_cases - Contains test cases for all functionality.
+tests folder with the following modules:
+
+ 1. test_cases.py - Contains test cases for all functionality and objects
 
 
-It also contains this README.md file.
+### It also contains this README.md file.
+
+To run the program in interactive mode, enter:
+
+>python main.py -i
+
+Enter either of the following for the corresponding functionality;
 
 # Functionality
 1. create_room >> Creates a room, either Office or Living Space and appends the room to an array in Dojo class in dojo.py
