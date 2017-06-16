@@ -15,6 +15,18 @@ main.py>> quit
 main.py>> (-i | --interactive)
 main.py>> (-h | --help)
 Options:
+    add_person          : Adds people to rooms or to unallocated if no rooms exists.
+    create_room         : Creates room and automatically adds unallocated people to it.
+    print_allocations   : Prints rooms and all people in them. Also prints people id(s)
+    print_unallocated   : Print unallocated people with their id.
+    print_room          : Prints the occupants in a specific room.
+    reallocate_person   : Moves person with the person_id to the room specified.
+    load_people         : Loads people from a text file.
+    save_state          : Saves data in system to database.
+    load_state          : Retrieves rooms and people from database.
+    delete              : Delete room or person from system. 
+    quit                : Exit applications. 
+    
     -i, --interactive  Interactive Mode
     -h, --help  Show this screen and exit.
 """
