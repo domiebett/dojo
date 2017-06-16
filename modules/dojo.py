@@ -354,6 +354,11 @@ class Dojo():
     def reallocate_person(self, person_identifier, room_name):
         """Reallocates person to another room"""
 
+        if not is_int(person_identifier):
+            print("\n   Id must be an integer, type 'print_allocations' " + \
+            "to view all people's id(s)")
+            return "Not an integer"
+
         selected_room = "None"
         selected_person = "None"
         current_room = "None"
