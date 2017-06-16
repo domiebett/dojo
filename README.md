@@ -5,9 +5,10 @@
 
 This repository contains files for the final Andela Bootcamp Cohort 18 Project, Creating an office or living space room allocation sofware for joining Andela Fellows or Andela Staff Members.
 
+
 ##Starting Up on system
 
-I assume you already have git, python and pip package isntaller installed. Install virtualenv:
+I assume you already have git, python and pip package installer installed. Install virtualenv:
 
 >pip install virtualenv
 
@@ -64,6 +65,7 @@ To run the program in interactive mode, enter:
 >python main.py -i
 
 Enter either of the following for the corresponding functionality;
+
 
 # Functionality
 1. create_room >> Creates a room, either Office or Living Space and appends the room to an array in Dojo class in dojo.py
