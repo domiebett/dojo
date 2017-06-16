@@ -1,0 +1,11 @@
+
+UNALLOCATED: 
+	OFFICES
+	---------
+		  Name  | Id 
+		  -----   ---
+
+	LIVING SPACES
+	---------------
+		  Name  | Id 
+		  -----   ---
