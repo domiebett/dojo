@@ -34,6 +34,9 @@ Activate virtual environment:
 
 >source env/bin/activate
 
+To run the program in interactive mode, enter:
+
+>python main.py -i
 
 The repo has:
 
@@ -48,7 +51,7 @@ modules folder with the following modules:
 
 tools folder with the following modules:
 
-1. tools.py -Contains simple functions that are regularly used in systems. 
+1. tools.py -Contains simple functions that are regularly used by the program. 
 
 
 ## Test Files
@@ -59,12 +62,6 @@ tests folder with the following modules:
 
 
 ### It also contains this README.md file.
-
-To run the program in interactive mode, enter:
-
->python main.py -i
-
-Enter either of the following for the corresponding functionality;
 
 
 # Functionality
