@@ -4,6 +4,6 @@ env/
 .cache
 .idea
 __pycache__/
-.coverage
+*.coverage
 *.db
 *.txt
