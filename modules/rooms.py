@@ -14,7 +14,7 @@ class Room(object):
         return False
 
     def add_occupant(self, person):
-        """Adds occupants to the rooms. Also checks if occupant is Staff 
+        """Adds occupants to the rooms. Also checks if occupant is Staff
         and denies them access to the Living Space"""
 
         if not self.has_space():
@@ -35,7 +35,7 @@ class LivingSpace(Room):
     """Creates a Living Space object for fellows in the Dojo Facilities"""
 
     def __init__(self, name):
-        
+
         self.name = name
         self.room_type = "living_space"
         self.maximum_people = 4

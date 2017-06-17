@@ -1,5 +1,6 @@
 import random
 
+
 def is_int(s):
     """Checks if an object is an integer"""
 

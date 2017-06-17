@@ -1,19 +1,15 @@
 
+import os
+import sys
+from os import path
+
+from modules.database import Base, People, Rooms, Unallocated
+from modules.people import Fellow, Person, Staff
+from modules.rooms import LivingSpace, Office, Room
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from tools.tools import get_input, is_int, random_empty_rooms
 
-from modules.rooms import Room, Office, LivingSpace
-from modules.people import Person, Fellow, Staff
-from modules.database import People, Rooms, Unallocated, Base
-
-from tools.tools import is_int
-from tools.tools import get_input
-from tools.tools import random_empty_rooms
-
-import random
-import os
-from os import path
-import sys
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
 
@@ -74,7 +70,8 @@ class Dojo():
 
                 if random_living_space == "Full":
 
-                    print("     Living spaces are full. Assigning to unallocated")
+                    print("     Living spaces are full. Assigning to" +
+                          " unallocated")
                     self.append_unallocated_persons(
                         person_name, person_role, "L")
                     random_living_space_name = "UNALLOCATED !!"
@@ -109,7 +106,8 @@ class Dojo():
                 print("     Staff cannot be assigned living space")
                 return "Wrong allocation"
 
-    def append_unallocated_persons(self, person_name, person_role="fellow", room="O"):
+    def append_unallocated_persons(
+            self, person_name, person_role="fellow", room="O"):
         """Appends people not allocated to any room to unallocated lists"""
 
         person = ""
@@ -141,8 +139,8 @@ class Dojo():
     # added to the respective lists in Dojo class
 
     def room_creator(self, room_type, room_name):
-        """Creates rooms; either offices or living spaces and appends it to 
-        either office_array or living_space_array"""
+        """Creates rooms; either offices or living spaces and appends
+        it to either office_array or living_space_array"""
 
         office_names = [room.name for room in self.office_array]
         living_space_names = [room.name for room in self.living_space_array]
@@ -234,7 +232,8 @@ class Dojo():
 
             for row in data:
                 string += "\t\t" + (" ".join((val.ljust(width)
-                                              for val, width in zip(row, col_width))) + "\n")
+                                              for val, width
+                                              in zip(row, col_width))) + "\n")
 
         string += "\n\tLIVING SPACES\n"
         string += "\t----------------"
@@ -251,7 +250,8 @@ class Dojo():
             col_width = [max(map(len, col)) for col in zip(*data)]
             for row in data:
                 string += "\t\t" + (" ".join((val.ljust(width)
-                                              for val, width in zip(row, col_width))) + "\n")
+                                              for val, width
+                                              in zip(row, col_width))) + "\n")
 
         string += "\n"
 
@@ -263,7 +263,6 @@ class Dojo():
 
         else:
             file_name = "output/" + output + ".txt"
-            # with open(os.path.join(os.path.dirname(__file__), file_name), 'w') as file_output:
             with open(file_name, 'w') as file_output:
                 file_output = open(file_name, "w")
                 file_output.write(string)
@@ -289,7 +288,8 @@ class Dojo():
         col_width = [max(map(len, col)) for col in zip(*data)]
         for row in data:
             string += "\t\t" + (" ".join((val.ljust(width)
-                                          for val, width in zip(row, col_width))) + "\n")
+                                          for val, width
+                                          in zip(row, col_width))) + "\n")
 
         string += "\n\tLIVING SPACES\n"
         string += "\t---------------\n"
@@ -305,7 +305,8 @@ class Dojo():
         col_width = [max(map(len, col)) for col in zip(*data)]
         for row in data:
             string += "\t\t" + (" ".join((val.ljust(width)
-                                          for val, width in zip(row, col_width))) + "\n")
+                                          for val, width
+                                          in zip(row, col_width))) + "\n")
 
         if output is None:
             return string
@@ -355,8 +356,9 @@ class Dojo():
         """Reallocates person to another room"""
 
         if not is_int(person_identifier):
-            print("\n   Id must be an integer, type 'print_allocations' " + \
-            "to view all people's id(s)")
+            print("\n   Id must be an integer, type 'print_allocations' " +
+                  "to view all people's id(s)")
+
             return "Not an integer"
 
         selected_room = "None"
@@ -404,16 +406,20 @@ class Dojo():
                             selected_person.office_name = selected_room.name
                         elif selected_room.room_type == "living_space":
                             selected_person.living_space_name = selected_room.name
+
                         selected_room.add_occupant(selected_person)
                         current_room.room_occupants.remove(selected_person)
-                        print("\n   " + selected_person.name + " has been reallocated to " +
-                              selected_room.room_type + " " + selected_room.name + "\n")
+                        print("\n   " + selected_person.name +
+                              " has been reallocated to " +
+                              selected_room.room_type + " " +
+                              selected_room.name + "\n")
 
                     else:
                         return "Destination is full"
 
                 else:
-                    print("\n   You have to reallocate to similar room types\n")
+                    print("\n   You have to reallocate to similar room types" +
+                          "\n")
                     return "Cannot add to room"
 
             else:
@@ -495,7 +501,7 @@ class Dojo():
 
             for person in room.room_occupants:
 
-                if not person in people_array:
+                if person not in people_array:
                     people_array.append(person)
 
         session.commit()
@@ -511,7 +517,8 @@ class Dojo():
                 person_living_space_name = "None"
 
             db_person = People(person.name, person.role, person.gender,
-                               person.age, person.office_name, person_living_space_name)
+                               person.age, person.office_name,
+                               person_living_space_name)
 
             session.add(db_person)
 
@@ -585,19 +592,22 @@ class Dojo():
 
                             if not person.office_name == "None":
                                 self.add_to_room(
-                                    fellow, person.office_name, temp_office_array)
+                                    fellow, person.office_name,
+                                    temp_office_array)
 
                             fellow.living_space_name = person.living_space_name
                             if not person.living_space_name == "None":
                                 self.add_to_room(
-                                    fellow, person.living_space_name, temp_living_array)
+                                    fellow, person.living_space_name,
+                                    temp_living_array)
 
                         elif person.role == "staff":
                             staff = Staff(person.name)
                             staff.office_name = person.office_name
                             if not person.office_name == "None":
                                 self.add_to_room(
-                                    staff, person.office_name, temp_office_array)
+                                    staff, person.office_name,
+                                    temp_office_array)
 
                 print("\n   Successfully retrieved rooms and occupants\n")
 
@@ -704,7 +714,7 @@ class Dojo():
 
     def delete_object(self, del_object, identifier, selector="all"):
         """Deletes either room or person. Room's identifier is room name while
-        person identifier is his id_key. selector gives options to delete from 
+        person identifier is his id_key. selector gives options to delete from
         the office, living_space or unallocated, or all"""
 
         merged_array = self.office_array + self.living_space_array
@@ -726,7 +736,8 @@ class Dojo():
         elif del_object == "person":
 
             if not is_int(identifier):
-                print("    To delete a person identifier needs to be an integer")
+                print("    To delete a person identifier needs to be an" +
+                      "integer")
                 return "Not integer"
 
             if selector == "office":
@@ -747,7 +758,8 @@ class Dojo():
                     self.living_unallocated, identifier)
 
         else:
-            print("Command not supported, you can only delete 'person' and 'room'")
+            print("Command not supported, you can only delete 'person'" +
+                  " and 'room'")
             return "Wrong object"
 
     def delete_from_room(self, array, identifier):
@@ -758,7 +770,8 @@ class Dojo():
                 if occupant.id_key == int(identifier):
                     room.room_occupants.remove(occupant)
                     print("Occupant " + occupant.name +
-                          " has been deleted from " + room.room_type + " " + room.name)
+                          " has been deleted from " + room.room_type + " " +
+                          room.name)
 
     def delete_from_unallocated(self, array, identifier):
         """Used to delete unallocated people"""

@@ -1,4 +1,3 @@
-
 class Person(object):
     """Creates a Person who can either be a Fellow or Staff"""
 

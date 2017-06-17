@@ -2,7 +2,6 @@
 Usage:
 main.py>> create_room <roomtype> <name>...
 main.py>> add_person <first_name> <last_name> <person_role> [<want_accommodation>]
-main.py>> find_userid <first_name> <last_name>
 main.py>> print_allocations [<filename>]
 main.py>> print_unallocated [<file_name>]
 main.py>> print_room <room_name>
@@ -26,7 +25,7 @@ Options:
     load_state          : Retrieves rooms and people from database.
     delete              : Delete room or person from system. 
     quit                : Exit applications. 
-    
+
     -i, --interactive  Interactive Mode
     -h, --help  Show this screen and exit.
 """
@@ -101,11 +100,6 @@ class FrontDojo(cmd.Cmd):
             want_accommodation = str(arg['<wants_accommodation>'])
         person_role = arg['<person_role>'].lower()
         self.dojo.add_person(person_name, person_role, want_accommodation)
-
-    @docopt_cmd
-    def do_find_userid(self, arg):
-        """Usage: find_userid <first_name> <last_name>"""
-        print("Feature not implemented. Stay tuned for future release")
 
     @docopt_cmd
     def do_reallocate_person(self, arg):
