@@ -127,6 +127,11 @@ class Dojo():
         """Calls the room creator method with room type and an array
         of room names as arguments"""
 
+        type_array = ["office", "living_space"]
+        if room_type not in type_array:
+            print("   " + room_type + " is not a valid room type")
+            return "Wrong room type"
+
         for room_name in room_names:
             self.room_creator(room_type, room_name)
 
@@ -137,8 +142,8 @@ class Dojo():
             self.assign_unallocated(self.living_unallocated,
                                     self.living_space_array)
 
-        print("\nOffices quantity: " + str(len(self.office_array)) +
-              "\nLiving Spaces: " + str(len(self.living_space_array)) +
+        print("\n    Offices quantity: " + str(len(self.office_array)) +
+              "\n    Living Spaces: " + str(len(self.living_space_array)) +
               "\n")
 
     # Creates a room either office or living space that is then
@@ -152,114 +157,82 @@ class Dojo():
         living_space_names = [room.name for room in self.living_space_array]
         rooms = office_names + living_space_names
 
+        for name in rooms:
+            if name.upper() == room_name.upper():
+                print("Room named " + room_name + " already exists")
+                return "Room exists"
+
         # The two below if statements creates an Office or LivingSpace
         # object, depending on the room_type
 
         if room_type == "office":
 
-            for name in rooms:
-                if name == room_name:
-                    print("Room named " + room_name + " already exists")
-                    return "Room exists"
-
             new_room = Office(room_name)
             self.office_array.append(new_room)
-            print("\n   Created office named " + room_name)
 
-        if room_type == "living_space":
-
-            for name in rooms:
-                if name == room_name:
-                    print("Room named " + room_name + " already exists")
-                    return "Room exists"
+        elif room_type == "living_space":
 
             new_room = LivingSpace(room_name)
             self.living_space_array.append(new_room)
-            print("\n   Created Living Space named " + room_name)
 
+        else:
+            print("\n   The room type " + room_type + " is not in system")
+            return "Wrong room type"
+
+        print("\n   Created " + new_room.room_type + " " + room_name)
         return "Created Successfully"
 
     def print_room(self, room_name):
         """Prints occupants in room with name parsed as argument"""
 
         merged_array = self.office_array + self.living_space_array
-        room_exists = False
 
-        for room in merged_array:
-            if room.name == room_name:
-                room_exists = True
+        if merged_array:
 
-        if not room_exists:
-            return "No room exists"
+            for room in merged_array:
 
-        for room in merged_array:
+                if room_name == room.name:
+                    string = "\nAllocation: \n"
+                    string += "\tRoom Name: " + room_name + \
+                        " (" + room.room_type + ").\n"
 
-            if room_name == room.name:
-                string = "\nAllocation: \n"
-                string += "\t Room Name: " + room_name + \
-                    " (" + room.room_type + ").\n"
+                    string += self.occupant_string(room)
 
-                occupants = room.room_occupants
-                string += "\t Occupants:"
+                    string += "\n"
+                    return string
 
-                for occupant in occupants:
-                    string += "" + occupant.name + ", "
+            return "Room doesnt exist"
 
-                string += "\n"
-                return string
+        else:
+            return ("\n   There are no rooms to print\n")
 
     def print_allocations(self, output):
         """Returns a string with all allocations in office and living_spaces"""
 
-        string = "\nALLOCATIONS: \n"
-        string += "\tOFFICES\n"
+        title = "\nALLOCATIONS: \n"
+        string = "\tOFFICES\n"
         string += "\t---------"
-        for room in self.office_array:
-            string += "\n\tOffice Name: " + room.name + "\n"
-            string += "\tOccupants: \n"
-            count = 1
 
-            data = [[" ", "Name", "|", "Id"], [" ", "-----", "", "---"]]
+        if self.office_array:
+            for room in self.office_array:
+                string += "\n\tOffice Name: " + room.name + "\n"
+                string += self.occupant_string(room)
 
-            # Arranges occupant information into a list which is then appended
-            # to the 'data' list to be used to display data to console.
-
-            for occupant in room.room_occupants:
-                data.append([(str(count) + ". "), occupant.name,
-                             "|", str(occupant.id_key)])
-                count += 1
-
-            col_width = [max(map(len, col))
-                         for col in zip(*data)]  # Spaces between columns
-
-            # Takes each list from the data list above and arranges it as
-            # rows, with columns spaced with the maximum column width plus
-            # col_width
-
-            for row in data:
-                string += "\t\t" + (" ".join((val.ljust(width)
-                                              for val, width
-                                              in zip(row, col_width))) + "\n")
+        else:
+            string += "\n\tThere are no offices in the system"
 
         string += "\n\tLIVING SPACES\n"
         string += "\t----------------"
-        for room in self.living_space_array:
-            string += "\n\tLiving Space Name:" + room.name + "\n"
-            string += "\tOccupants: \n"
-            count = 1
-            data = [[" ", "Name", "|", "Id"], [" ", "-----", "", "---"]]
-            for occupant in room.room_occupants:
-                data.append([(str(count) + ". "), occupant.name,
-                             "|", str(occupant.id_key)])
-                count += 1
 
-            col_width = [max(map(len, col)) for col in zip(*data)]
-            for row in data:
-                string += "\t\t" + (" ".join((val.ljust(width)
-                                              for val, width
-                                              in zip(row, col_width))) + "\n")
+        if self.living_space_array:
+            for room in self.living_space_array:
+                string += "\n\tLiving Space Name:" + room.name + "\n"
+                string += self.occupant_string(room)
 
-        string += "\n"
+        else:
+            string += "\n\tThere are no living spaces in the system"
+
+        string = title + string + "\n"
 
         # returns the string to be printed to console or creates txt file
         # and writes to it.
@@ -268,12 +241,42 @@ class Dojo():
             return string
 
         else:
-            file_name = "output/" + output + ".txt"
+            file_name = "output/" + output
             with open(file_name, 'w') as file_output:
                 file_output = open(file_name, "w")
                 file_output.write(string)
                 file_output.close()
                 return "File saved to " + file_name + "."
+
+    def occupant_string(self, room):
+        """Concatenates strings with information of occupants in a room"""
+
+        string = "\tOccupants: \n"
+        count = 1
+
+        data = [[" ", "Name", "|", "Id"], [" ", "-----", "", "---"]]
+
+        # Arranges occupant information into a list which is then appended
+        # to the 'data' list to be used to display data to console.
+
+        for occupant in room.room_occupants:
+            data.append([(str(count) + ". "), occupant.name,
+                         "|", str(occupant.id_key)])
+            count += 1
+
+        col_width = [max(map(len, col))
+                     for col in zip(*data)]  # Spaces between columns
+
+        # Takes each list from the data list above and arranges it as
+        # rows, with columns spaced with the maximum column width plus
+        # col_width
+
+        for row in data:
+            string += "\t\t" + (" ".join((val.ljust(width)
+                                          for val, width
+                                          in zip(row, col_width))) + "\n")
+
+        return string
 
     def print_unallocated(self, output):
         """Returns all unallocated persons either printed to console or
@@ -318,7 +321,7 @@ class Dojo():
             return string
 
         else:
-            file_name = "output/" + output + ".txt"
+            file_name = "output/" + output
             with open(file_name, 'w') as file_output:
                 file_output = open(file_name, "w")
                 file_output.write(string)
