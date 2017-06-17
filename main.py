@@ -10,7 +10,7 @@ main.py>> reallocate_person <person_ID> <room_name>
 main.py>> load_people <file_name>
 main.py>> save_state [--db=<database>]
 main.py>> load_state [<database>]
-main.py>> delete <object> <identifier>
+main.py>> delete <object_to_delete> <object_identifier> [<selector>]
 main.py>> quit
 main.py>> (-i | --interactive)
 main.py>> (-h | --help)
