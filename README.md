@@ -78,14 +78,14 @@ The repo has:
 
 1. main.py	-Contains functions parsing the docopt command line arguments and calling respective function
 
-modules folder with the following modules:
+Modules folder with the following modules:
 
 1. dojo.py	-Contains Dojo class with lists for rooms and functions for accessing database.
 2. rooms.py -Contains Room object holding with list containing its occupants (Person objects)
 3. people.py -Contains Person object used as a template for Fellows and Staff.
 4. database.py - Contains class models for purpose of saving to database.
 
-tools folder with the following modules:
+Tools folder with the following modules:
 
 1. tools.py -Contains simple functions that are regularly used by the program. 
 
