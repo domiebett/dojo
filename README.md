@@ -34,6 +34,10 @@ Activate virtual environment:
 
 >source env/bin/activate
 
+Install requirements:
+
+>pip install -r requirements.txt
+
 To run the program in interactive mode, enter:
 
 >python main.py -i
