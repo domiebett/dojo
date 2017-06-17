@@ -122,7 +122,7 @@ class FrontDojo(cmd.Cmd):
         else:
             output = str(args['<filename>'])
 
-        print(self.dojo.print_allocations(output))
+        cprint(self.dojo.print_allocations(output), "green")
 
     @docopt_cmd
     def do_print_unallocated(self, args):
@@ -131,12 +131,12 @@ class FrontDojo(cmd.Cmd):
             output = None
         else:
             output = str(args['<filename>'])
-        print(self.dojo.print_unallocated(output))
+        cprint(self.dojo.print_unallocated(output), "green")
 
     @docopt_cmd
     def do_print_room(self, arg):
         """Usage: print_room <room_name>"""
-        print(self.dojo.print_room(arg['<room_name>']))
+        cprint(self.dojo.print_room(arg['<room_name>']), "green")
 
     @docopt_cmd
     def do_save_state(self, args):
