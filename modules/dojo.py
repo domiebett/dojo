@@ -129,7 +129,13 @@ class Dojo():
 
         for room_name in room_names:
             self.room_creator(room_type, room_name)
-        self.assign_unallocated(room_type)
+
+        if room_type == "office":
+            self.assign_unallocated(self.office_unallocated,
+                                    self.office_array)
+        elif room_type == "living_space":
+            self.assign_unallocated(self.living_unallocated,
+                                    self.living_space_array)
 
         print("\nOffices quantity: " + str(len(self.office_array)) +
               "\nLiving Spaces: " + str(len(self.living_space_array)) +
@@ -319,38 +325,24 @@ class Dojo():
                 file_output.close()
                 return "File saved to path: '" + file_name + "'."
 
-    def assign_unallocated(self, room_type):
+    def assign_unallocated(self, unallocated_array, room_array):
         """Automatically allocates unallocated people to rooms if one exists"""
 
-        if room_type == "office":
+        while len(unallocated_array) > 0:
+            empty_room = random_empty_rooms(room_array)
 
-            for i in range(len(self.office_unallocated)):
-                empty_room = random_empty_rooms(self.office_array)
-
-                if empty_room == "Full":
-                    break
-                else:
-                    person = self.office_unallocated[0]
+            if empty_room == "Full":
+                break
+            else:
+                person = unallocated_array[0]
+                if empty_room.room_type == "office":
                     person.office_name = empty_room.name
-                    empty_room.add_occupant(person)
-                    self.office_unallocated.remove(person)
-                    print("\t" + person.name +
-                          " has been added to Office " + empty_room.name)
-
-        if room_type == "living_space":
-
-            for i in range(len(self.living_unallocated)):
-                empty_room = random_empty_rooms(self.living_space_array)
-
-                if empty_room == "Full":
-                    break
-                else:
-                    person = self.living_unallocated[0]
+                elif empty_room.room_type == "living_space":
                     person.living_space_name = empty_room.name
-                    empty_room.add_occupant(person)
-                    self.living_unallocated.remove(person)
-                    print("\t" + person.name +
-                          " has been added to Living Space " + empty_room.name)
+                empty_room.add_occupant(person)
+                unallocated_array.remove(person)
+                print("\t" + person.name +
+                      " has been added to Office " + empty_room.name)
 
     def reallocate_person(self, person_identifier, room_name):
         """Reallocates person to another room"""
@@ -437,9 +429,6 @@ class Dojo():
         try:
             input_file = open(full_file_name)
             data_list = input_file.readlines()
-            person_name = ""
-            person_role = ""
-            person_accommodation = ""
 
             # Loops through all lines in text file checking for data integrity
             # then calls the add person function to create and assign random
