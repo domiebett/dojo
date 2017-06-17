@@ -379,14 +379,14 @@ class DatabaseTestCase(unittest.TestCase):
         self.assertEqual("No database", wrong_retrieval)
 
     @mock.patch('builtins.input', side_effect=['database'])
-    def test_database_overwrites_room(self, input):
+    def test_database_overwrites_room(self, sys_input):
         self.dojo_object.create_room("office", ["White"])
         self.dojo_object.load_state("tests.db")
         people = self.dojo_object.office_array[0].room_occupants
         self.assertEqual(len(people), 6)
 
     @mock.patch('builtins.input', side_effect=['system'])
-    def test_system_keeps_system_files(self, input):
+    def test_system_keeps_system_files(self, sys_input):
         self.dojo_object.create_room("office", ["White"])
         self.dojo_object.load_state("tests.db")
         people = self.dojo_object.office_array[0].room_occupants

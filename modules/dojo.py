@@ -524,7 +524,7 @@ class Dojo():
 
         session.commit()
 
-        print("   All rooms have been added to the database succesfully")
+        print("   All rooms have been added to the database successfully")
 
         # Add unallocated persons
 
@@ -541,8 +541,8 @@ class Dojo():
             session.add(db_unallocated)
 
         session.commit()
-        print("   Unallocated persons have been added to the database\
-            successfully\n")
+        print("   Unallocated persons have been added to the database" +
+              "successfully\n")
 
         if os.path.exists(database):
             return "Success"
