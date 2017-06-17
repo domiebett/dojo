@@ -38,6 +38,39 @@ To run the program in interactive mode, enter:
 
 >python main.py -i
 
+
+## Usage:
+
+> main.py>> create_room <roomtype> <name>...
+> main.py>> add_person <first_name> <last_name> <person_role> [<want_accommodation>]
+> main.py>> find_userid <first_name> <last_name>
+> main.py>> print_allocations [<filename>]
+> main.py>> print_unallocated [<file_name>]
+> main.py>> print_room <room_name>
+> main.py>> reallocate_person <person_ID> <room_name>
+> main.py>> load_people <file_name>
+> main.py>> save_state [--db=<database>]
+> main.py>> load_state [<database>]
+> main.py>> delete <object_to_delete> <object_identifier> [<selector>]
+> main.py>> quit
+> main.py>> (-i | --interactive)
+> main.py>> (-h | --help)
+
+## Options:
+
+> add_person          : Adds people to rooms or to unallocated if no rooms exists.
+> create_room         : Creates room and automatically adds unallocated people to it.
+> print_allocations   : Prints rooms and all people in them. Also prints people id(s)
+> print_unallocated   : Print unallocated people with their id.
+> print_room          : Prints the occupants in a specific room.
+> reallocate_person   : Moves person with the person_id to the room specified.
+> load_people         : Loads people from a text file.
+> save_state          : Saves data in system to database.
+> load_state          : Retrieves rooms and people from database.
+> delete              : Delete room or person from system. 
+> quit                : Exit applications. 
+
+
 The repo has:
 
 1. main.py	-Contains functions parsing the docopt command line arguments and calling respective function
@@ -63,17 +96,6 @@ tests folder with the following modules:
 
 ### It also contains this README.md file.
 
+## Author:
 
-# Functionality
-1. create_room >> Creates a room, either Office or Living Space and appends the room to an array in Dojo class in dojo.py
-2. add_person >> Adds person either Fellow or Staff and gives them an office. Adds them to specific rooms depending on their requirements.
-3. print_room >> prints occupants of the room whose name is given as arguments in function.
-4. print_allocations >> outputs to text file if filename option is given, else prints all allocations to the console.
-5. print_unallocated >> output to text file if filename option is given, else prints all unallocated person to the console.
-6. reallocate_person >> moves person with specified id to specified room
-7. load_people >> Loads people from a txt file with the specified name. Txt files are found in the 'input' folder
-8. save_state >> Saves data to a database of a given name or to default.db if no name has been given.
-9. load_state >> Loads data from the database using the SQLAlchemy library.
-10. delete >> Delete either room or person with identifier passed
-
-Check Usage docs in main.py for a full understanding of the arguments to be passed.
+Dominic Kipchumba Bett.
