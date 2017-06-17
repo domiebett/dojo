@@ -62,6 +62,11 @@ class CreateRoomTestCase(unittest.TestCase):
         self.assertIsInstance(self.office_room, Room)
         self.assertIsInstance(self.living_space_room, Room)
 
+    def test_room_type_is_office_or_living_space(self):
+
+        wrong_type = self.dojo_object.create_room("blah", ["White"])
+        self.assertEqual(wrong_type, "Wrong room type")
+
 
 class AddPersonTestCase(unittest.TestCase):
 
@@ -148,7 +153,7 @@ class AllocationsTestCase(unittest.TestCase):
 
     def test_finds_no_room_if_no_room_with_name_exists(self):
         print_room = self.dojo_object.print_room("White")
-        self.assertEqual(print_room, "No room exists")
+        self.assertEqual(print_room, "Room doesnt exist")
 
     def test_only_fellow_and_staff_are_allowed_during_auto_allocation(self):
         wrong_allocation = self.dojo_object.append_unallocated_persons(
@@ -157,11 +162,10 @@ class AllocationsTestCase(unittest.TestCase):
 
     def test_print_empty_room_return_empty_result(self):
         string = "\nAllocation: \n"
-        string += "\t Room Name: Yellow" + \
+        string += "\tRoom Name: Yellow" + \
             " (office).\n"
 
-        string += "\t Occupants:"
-        string += "\n"
+        string += "\tOccupants: \n\t\t  Name  | Id \n\t\t  -----   ---\n\n"
 
         func_string = self.dojo_object.print_room("Yellow")
         self.assertEqual(string, func_string)
@@ -175,12 +179,12 @@ class AllocationsTestCase(unittest.TestCase):
 
     def test_print_allocations_outputs_to_file(self):
         string = "File saved to output/tests.txt."
-        allocation_string = self.dojo_object.print_allocations("tests")
+        allocation_string = self.dojo_object.print_allocations("tests.txt")
         self.assertEqual(string, allocation_string)
 
     def test_print_unallocated_outputs_to_file(self):
         string = "File saved to path: 'output/tests.txt'."
-        unallocated_string = self.dojo_object.print_unallocated("tests")
+        unallocated_string = self.dojo_object.print_unallocated("tests.txt")
         self.assertEqual(string, unallocated_string)
 
 
@@ -227,6 +231,10 @@ class ReallocateTestCase(unittest.TestCase):
         wrong_reallocation = self.dojo_object.reallocate_person(
             5048488882, "White")
         self.assertEqual(wrong_reallocation, "Person doesnt exist")
+
+    def test_only_integers_are_allowed(self):
+        wrong_id = self.dojo_object.reallocate_person("string", "White")
+        self.assertEqual(wrong_id, "Not an integer")
 
     def test_person_is_not_moved_if_there_destination_is_full(self):
         for i in range(12):
