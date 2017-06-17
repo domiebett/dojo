@@ -41,6 +41,7 @@ To run the program in interactive mode, enter:
 
 ## Usage:
 
+```
 > main.py>> create_room <roomtype> <name>...
 > main.py>> add_person <first_name> <last_name> <person_role> [<want_accommodation>]
 > main.py>> find_userid <first_name> <last_name>
@@ -55,9 +56,11 @@ To run the program in interactive mode, enter:
 > main.py>> quit
 > main.py>> (-i | --interactive)
 > main.py>> (-h | --help)
+```
 
 ## Options:
 
+```
 > add_person          : Adds people to rooms or to unallocated if no rooms exists.
 > create_room         : Creates room and automatically adds unallocated people to it.
 > print_allocations   : Prints rooms and all people in them. Also prints people id(s)
@@ -69,7 +72,7 @@ To run the program in interactive mode, enter:
 > load_state          : Retrieves rooms and people from database.
 > delete              : Delete room or person from system. 
 > quit                : Exit applications. 
-
+```
 
 The repo has:
 
