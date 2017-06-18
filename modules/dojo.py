@@ -139,10 +139,10 @@ class Dojo():
 
         if room_type == "office":
             assign_unallocated(self.office_unallocated,
-                                    self.office_array)
+                               self.office_array)
         elif room_type == "living_space":
             assign_unallocated(self.living_unallocated,
-                                    self.living_space_array)
+                               self.living_space_array)
 
         cprint("\n    Offices quantity: " + str(len(self.office_array)) +
                "\n    Living Spaces: " + str(len(self.living_space_array)) +
