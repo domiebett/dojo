@@ -265,7 +265,7 @@ class ReallocateTestCase(unittest.TestCase):
         self.assertEqual(person.office_name, "White")
 
 
-class Load_People_Test_Case(unittest.TestCase):
+class LoadPeopleTestCase(unittest.TestCase):
 
     """Tests the load_people function in dojo.py"""
 
@@ -274,13 +274,13 @@ class Load_People_Test_Case(unittest.TestCase):
 
     def test_correct_number_of_people_are_added_to_room(self):
         self.dojo_object.create_room("office", ["Blue"])
-        self.dojo_object.load_people("input")
+        self.dojo_object.load_people("input.txt")
         occupants = self.dojo_object.office_array[0].room_occupants
         self.assertEqual(len(occupants), 5,
                          msg="People should be added to room correctly")
 
     def test_returns_message_if_txt_file_doesnt_exist(self):
-        no_file = self.dojo_object.load_people("no_file")
+        no_file = self.dojo_object.load_people("no_file.txt")
         self.assertEqual(no_file, "File not found",
                          msg="File to load from should exist")
 
