@@ -379,7 +379,7 @@ class Dojo():
     def load_people(self, file_name):
         """Loads people from a text file and adds them to rooms"""
 
-        full_file_name = "input/" + str(file_name) + ".txt"
+        full_file_name = "input/" + str(file_name)
         try:
             input_file = open(full_file_name)
             data_list = input_file.readlines()
