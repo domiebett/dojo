@@ -23,8 +23,8 @@ Options:
     load_people         : Loads people from a text file.
     save_state          : Saves data in system to database.
     load_state          : Retrieves rooms and people from database.
-    delete              : Delete room or person from system. 
-    quit                : Exit applications. 
+    delete              : Delete room or person from system.
+    quit                : Exit applications.
 
     -i, --interactive  Interactive Mode
     -h, --help  Show this screen and exit.

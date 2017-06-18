@@ -34,7 +34,7 @@ class CreateRoomTestCase(unittest.TestCase):
 
     def test_if_adding_occupants_increases(self):
 
-        for i in range(4):
+        for _ in range(4):
             self.office_room.add_occupant(self.commuter)
 
         occupants = len(self.office_room.room_occupants)
@@ -42,7 +42,7 @@ class CreateRoomTestCase(unittest.TestCase):
 
     def test_doesnt_add_past_maximum_capacity(self):
 
-        for i in range(7):
+        for _ in range(7):
             self.office_room.add_occupant(self.commuter)
 
         add_extra = self.office_room.add_occupant(self.commuter)
@@ -171,7 +171,7 @@ class AllocationsTestCase(unittest.TestCase):
         self.assertEqual(string, func_string)
 
     def test_automatically_allocated_person_is_assingned_the_right_room(self):
-        for i in range(8):
+        for _ in range(8):
             self.dojo_object.add_person("Dominic Bett", "fellow", "N")
         self.dojo_object.create_room("office", ["Green"])
         person = self.dojo_object.office_array[1].room_occupants[0]
@@ -237,7 +237,7 @@ class ReallocateTestCase(unittest.TestCase):
         self.assertEqual(wrong_id, "Not an integer")
 
     def test_person_is_not_moved_if_there_destination_is_full(self):
-        for i in range(12):
+        for _ in range(12):
             self.dojo_object.add_person("Dominic Bett", "fellow", "N")
         person_id = self.dojo_object.office_array[0].room_occupants[0].id_key
         wrong_reallocation = self.dojo_object.reallocate_person(
@@ -334,7 +334,7 @@ class RoomsTestCase(unittest.TestCase):
     def test_has_space_and_add_occupant_function(self):
         self.assertTrue(self.office.has_space())
         self.assertTrue(self.living_space.has_space())
-        for i in range(6):
+        for _ in range(6):
             person = Fellow("Dom Bett")
             self.office.add_occupant(person)
             self.living_space.add_occupant(person)
@@ -350,7 +350,7 @@ class DatabaseTestCase(unittest.TestCase):
         self.dojo_for_save = Dojo()
         self.dojo_for_save.create_room("office", ["White", "Blue"])
         self.dojo_for_save.create_room("living_space", ["Red", "Black"])
-        for i in range(10):
+        for _ in range(10):
             self.dojo_for_save.add_person("Dominic Bett", "fellow", "Y")
             self.dojo_for_save.add_person("Darren Kasengo", "staff")
         self.dojo_for_save.save_state("tests.db")
