@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/DomieBett/Week_Two_Andela_Project_Dojo.svg?branch=develop)](https://travis-ci.org/DomieBett/Week_Two_Andela_Project_Dojo) [![Coverage Status](https://coveralls.io/repos/github/DomieBett/Week_Two_Andela_Project_Dojo/badge.svg?branch=master)](https://coveralls.io/github/DomieBett/Week_Two_Andela_Project_Dojo?branch=master)
+[![Build Status](https://travis-ci.org/DomieBett/Week_Two_Andela_Project_Dojo.svg?branch=develop)](https://travis-ci.org/DomieBett/Week_Two_Andela_Project_Dojo) [![Coverage Status](https://coveralls.io/repos/github/DomieBett/Week_Two_Andela_Project_Dojo/badge.svg?branch=master)](https://coveralls.io/github/DomieBett/Week_Two_Andela_Project_Dojo?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6eb22d0872f74963a28d4b35ac9f0677)](https://www.codacy.com/app/dbett49/Week_Two_Andela_Project_Dojo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DomieBett/Week_Two_Andela_Project_Dojo&amp;utm_campaign=Badge_Grade)
 # Week_Two_Andela_Project_Dojo
 
 ## Final project for week two bootcamp
