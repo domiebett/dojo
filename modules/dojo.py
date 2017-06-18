@@ -8,7 +8,7 @@ from modules.people import Fellow, Person, Staff
 from modules.rooms import LivingSpace, Office, Room
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from tools.tools import get_input, is_int, random_empty_rooms
+from tools.tools import *
 from termcolor import cprint
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
@@ -138,10 +138,10 @@ class Dojo():
             self.room_creator(room_type, room_name)
 
         if room_type == "office":
-            self.assign_unallocated(self.office_unallocated,
+            assign_unallocated(self.office_unallocated,
                                     self.office_array)
         elif room_type == "living_space":
-            self.assign_unallocated(self.living_unallocated,
+            assign_unallocated(self.living_unallocated,
                                     self.living_space_array)
 
         cprint("\n    Offices quantity: " + str(len(self.office_array)) +
@@ -196,7 +196,7 @@ class Dojo():
                     string += "\tRoom Name: " + room_name + \
                         " (" + room.room_type + ").\n"
 
-                    string += self.occupant_string(room)
+                    string += occupant_string(room)
 
                     string += "\n"
                     return string
@@ -216,7 +216,7 @@ class Dojo():
         if self.office_array:
             for room in self.office_array:
                 string += "\n\tOffice Name: " + room.name + "\n"
-                string += self.occupant_string(room)
+                string += occupant_string(room)
 
         else:
             string += "\n\tThere are no offices in the system"
@@ -227,7 +227,7 @@ class Dojo():
         if self.living_space_array:
             for room in self.living_space_array:
                 string += "\n\tLiving Space Name:" + room.name + "\n"
-                string += self.occupant_string(room)
+                string += occupant_string(room)
 
         else:
             string += "\n\tThere are no living spaces in the system"
@@ -247,36 +247,6 @@ class Dojo():
                 file_output.write(string)
                 file_output.close()
                 return "File saved to " + file_name + "."
-
-    def occupant_string(self, room):
-        """Concatenates strings with information of occupants in a room"""
-
-        string = "\tOccupants: \n"
-        count = 1
-
-        data = [[" ", "Name", "|", "Id"], [" ", "-----", "", "---"]]
-
-        # Arranges occupant information into a list which is then appended
-        # to the 'data' list to be used to display data to console.
-
-        for occupant in room.room_occupants:
-            data.append([(str(count) + ". "), occupant.name,
-                         "|", str(occupant.id_key)])
-            count += 1
-
-        col_width = [max(map(len, col))
-                     for col in zip(*data)]  # Spaces between columns
-
-        # Takes each list from the data list above and arranges it as
-        # rows, with columns spaced with the maximum column width plus
-        # col_width
-
-        for row in data:
-            string += "\t\t" + (" ".join((val.ljust(width)
-                                          for val, width
-                                          in zip(row, col_width))) + "\n")
-
-        return string
 
     def print_unallocated(self, output):
         """Returns all unallocated persons either printed to console or
@@ -327,25 +297,6 @@ class Dojo():
                 file_output.write(string)
                 file_output.close()
                 return "File saved to path: '" + file_name + "'."
-
-    def assign_unallocated(self, unallocated_array, room_array):
-        """Automatically allocates unallocated people to rooms if one exists"""
-
-        while len(unallocated_array) > 0:
-            empty_room = random_empty_rooms(room_array)
-
-            if empty_room == "Full":
-                break
-            else:
-                person = unallocated_array[0]
-                if empty_room.room_type == "office":
-                    person.office_name = empty_room.name
-                elif empty_room.room_type == "living_space":
-                    person.living_space_name = empty_room.name
-                empty_room.add_occupant(person)
-                unallocated_array.remove(person)
-                cprint("\t" + person.name +
-                       " has been added to Office " + empty_room.name, "green")
 
     def reallocate_person(self, person_identifier, room_name):
         """Reallocates person to another room"""
@@ -587,13 +538,13 @@ class Dojo():
                             fellow.office_name = person.office_name
 
                             if not person.office_name == "None":
-                                self.add_to_room(
+                                add_to_room(
                                     fellow, person.office_name,
                                     temp_office_array)
 
                             fellow.living_space_name = person.living_space_name
                             if not person.living_space_name == "None":
-                                self.add_to_room(
+                                add_to_room(
                                     fellow, person.living_space_name,
                                     temp_living_array)
 
@@ -601,7 +552,7 @@ class Dojo():
                             staff = Staff(person.name)
                             staff.office_name = person.office_name
                             if not person.office_name == "None":
-                                self.add_to_room(
+                                add_to_room(
                                     staff, person.office_name,
                                     temp_office_array)
 
@@ -641,18 +592,6 @@ class Dojo():
         else:
             cprint("There is no database named " + database, "red")
             return "No database"
-
-    def add_to_room(self, person, room_name, array):
-        """Finds room with name that matches argument 'room_name' and adds
-        person to it"""
-
-        for room in array:
-            if room_name == room.name:
-
-                room.add_occupant(person)
-                cprint("\n     Added " + person.name + " to " + room_name,
-                       "green")
-                return "Success"
 
     def add_db_rooms(self, rooms_array):
         """Checks for conflicts between db rooms and system rooms and requests user
@@ -744,43 +683,23 @@ class Dojo():
                 return "Not integer"
 
             if selector == "office":
-                self.delete_from_room(self.office_array, identifier)
+                delete_from_room(self.office_array, identifier)
             elif selector == "living_space":
-                self.delete_from_room(self.living_space_array, identifier)
+                delete_from_room(self.living_space_array, identifier)
             elif selector == "unallocated":
                 self.delete_from_unallocated(
                     self.office_unallocated, identifier)
                 self.delete_from_unallocated(
                     self.living_unallocated, identifier)
             elif selector == "all":
-                self.delete_from_room(self.office_array, identifier)
-                self.delete_from_room(self.living_space_array, identifier)
-                self.delete_from_unallocated(
+                delete_from_room(self.office_array, identifier)
+                delete_from_room(self.living_space_array, identifier)
+                delete_from_unallocated(
                     self.office_unallocated, identifier)
-                self.delete_from_unallocated(
+                delete_from_unallocated(
                     self.living_unallocated, identifier)
 
         else:
             cprint("Command not supported, you can only delete 'person'" +
                    " and 'room'", "red")
             return "Wrong object"
-
-    def delete_from_room(self, array, identifier):
-        """Used to delete people from specific rooms"""
-
-        for room in array:
-            for occupant in room.room_occupants:
-                if occupant.id_key == int(identifier):
-                    room.room_occupants.remove(occupant)
-                    cprint("Occupant " + occupant.name +
-                           " has been deleted from " + room.room_type + " " +
-                           room.name, "green")
-
-    def delete_from_unallocated(self, array, identifier):
-        """Used to delete unallocated people"""
-
-        for person in array:
-            if person.id_key == int(identifier):
-                array.remove(person)
-                cprint("Removed " + person.name + " from waiting list",
-                       "green")
