@@ -14,37 +14,37 @@ This repository contains files for the final Andela Bootcamp Cohort 18 Project, 
 
 I assume you already have git, python and pip package installer installed. Install virtualenv:
 
- ```pip install virtualenv```
+ ```   pip install virtualenv```
 
 Make a project directory and navigate to it:
 
- ```mkdir ~/Projects```
+ ```   mkdir ~/Projects```
 
- ```cd ~/Projects```
+ ```   cd ~/Projects```
 
 Clone repository:
 
- ```git clone https://github.com/DomieBett/Week_Two_Andela_Project_Dojo.git```
+ ```   git clone https://github.com/DomieBett/Week_Two_Andela_Project_Dojo.git```
 
 Navigate into project directory:
 
- ```cd Week_Two_Andela_Project_Dojo```
+ ```   cd Week_Two_Andela_Project_Dojo```
 
 Set up a virtual environment:
 
-```virtualenv --python=python3 env```
+```   virtualenv --python=python3 env```
 
 Activate virtual environment:
 
- ```source env/bin/activate```
+ ```   source env/bin/activate```
 
 Install requirements:
 
- ```pip install -r requirements.txt```
+ ```   pip install -r requirements.txt```
 
 To run the program in interactive mode, enter:
 
- ```python main.py -i```
+ ```   python main.py -i```
 
 
 ## Usage:
