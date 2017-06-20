@@ -3,11 +3,11 @@
 
 ## Watch the demo below:
 
-[![asciicast](https://asciinema.org/a/8PfTRk0QdeWVmZoU46BYFwTTd.png)](https://asciinema.org/a/8PfTRk0QdeWVmZoU46BYFwTTd)
+[![asciicast](https://asciinema.org/a/8PfTRk0QdeWVmZoU46BYFwTTd.png)](https://asciinema.org/a/Nv53CHvG9QFSZUAI7q9b8lHGY)
 
 ## Final project for week two bootcamp
 
-This repository contains files for the final Andela Bootcamp Cohort 18 Project, Creating an office or living space room allocation sofware for joining Andela Fellows or Andela Staff Members.
+This repository contains files for the final Andela Bootcamp Cohort 18 Project. It is designed to allocated people to rooms available in the Dojo, one of Andela's facilities.
 
 
 ## Starting Up on system
