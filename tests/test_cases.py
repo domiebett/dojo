@@ -170,7 +170,7 @@ class AllocationsTestCase(unittest.TestCase):
         func_string = self.dojo_object.print_room("Yellow")
         self.assertEqual(string, func_string)
 
-    def test_automatically_allocated_person_is_assingned_the_right_room(self):
+    def test_automatically_allocated_person_is_assigned_the_right_room(self):
         for _ in range(8):
             self.dojo_object.add_person("Dominic Bett", "fellow", "N")
         self.dojo_object.create_room("office", ["Green"])
