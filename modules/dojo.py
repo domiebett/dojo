@@ -188,18 +188,18 @@ class Dojo():
         merged_array = self.office_array + self.living_space_array
 
         if merged_array:
-
+            strings = []
             for room in merged_array:
 
                 if room_name == room.name:
-                    string = "\nAllocation: \n"
-                    string += "\tRoom Name: " + room_name + \
-                        " (" + room.room_type + ").\n"
+                    strings.append("\nAllocation: \n")
+                    strings.append("\tRoom Name: " + room_name + \
+                        " (" + room.room_type + ").\n")
 
-                    string += occupant_string(room)
+                    strings.append(occupant_string(room))
 
-                    string += "\n"
-                    return string
+                    strings.append("\n")
+                    return ''.join(strings)
 
             return "Room doesnt exist"
 
@@ -209,30 +209,32 @@ class Dojo():
     def print_allocations(self, output):
         """Returns a string with all allocations in office and living_spaces"""
 
-        title = "\nALLOCATIONS: \n"
-        string = "\tOFFICES\n"
-        string += "\t---------"
+        strings = []
+        strings.append("\nALLOCATIONS: \n")
+        strings.append("\tOFFICES\n")
+        strings.append("\t---------")
 
         if self.office_array:
             for room in self.office_array:
-                string += "\n\tOffice Name: " + room.name + "\n"
-                string += occupant_string(room)
+                strings.append("\n\tOffice Name: " + room.name + "\n")
+                strings.append(occupant_string(room))
 
         else:
-            string += "\n\tThere are no offices in the system"
+            strings.append("\n\tThere are no offices in the system")
 
-        string += "\n\tLIVING SPACES\n"
-        string += "\t----------------"
+        strings.append("\n\tLIVING SPACES\n")
+        strings.append("\t----------------")
 
         if self.living_space_array:
             for room in self.living_space_array:
-                string += "\n\tLiving Space Name:" + room.name + "\n"
-                string += occupant_string(room)
+                strings.append("\n\tLiving Space Name:" + room.name + "\n")
+                strings.append(occupant_string(room))
 
         else:
-            string += "\n\tThere are no living spaces in the system"
+            strings.append("\n\tThere are no living spaces in the system")
 
-        string = title + string + "\n"
+        strings.append("\n")
+        string = ''.join(strings)
 
         # returns the string to be printed to console or creates txt file
         # and writes to it.
@@ -252,9 +254,10 @@ class Dojo():
         """Returns all unallocated persons either printed to console or
         to text file"""
 
-        string = "\nUNALLOCATED: \n"
-        string += "\tOFFICES\n"
-        string += "\t---------\n"
+        strings = []
+        strings.append("\nUNALLOCATED: \n")
+        strings.append("\tOFFICES\n")
+        strings.append("\t---------\n")
         data = [[" ", "Name", "|", "Id"], [" ", "-----", "", "---"]]
         count = 1
 
@@ -266,12 +269,12 @@ class Dojo():
 
         col_width = [max(map(len, col)) for col in zip(*data)]
         for row in data:
-            string += "\t\t" + (" ".join((val.ljust(width)
+            strings.append("\t\t" + (" ".join((val.ljust(width)
                                           for val, width
-                                          in zip(row, col_width))) + "\n")
+                                          in zip(row, col_width))) + "\n"))
 
-        string += "\n\tLIVING SPACES\n"
-        string += "\t---------------\n"
+        strings.append("\n\tLIVING SPACES\n")
+        strings.append("\t---------------\n")
         data = [[" ", "Name", "|", "Id"], [" ", "-----", "", "---"]]
         count = 1
 
@@ -283,9 +286,11 @@ class Dojo():
 
         col_width = [max(map(len, col)) for col in zip(*data)]
         for row in data:
-            string += "\t\t" + (" ".join((val.ljust(width)
+            strings.append("\t\t" + (" ".join((val.ljust(width)
                                           for val, width
-                                          in zip(row, col_width))) + "\n")
+                                          in zip(row, col_width))) + "\n"))
+
+        string = ''.join(strings)
 
         if output is None:
             return string
