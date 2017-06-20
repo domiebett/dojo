@@ -45,7 +45,7 @@ class Fellow(Person):
 
     def __init__(self, name, living_space=False):
 
-        super().__init__(name, role="Fellow")
+        super().__init__(name, role="fellow")
         self.name = name
         self.role = "fellow"
         self.living_space = living_space
@@ -57,6 +57,6 @@ class Staff(Person):
 
     def __init__(self, name):
 
-        super().__init__(name, role="Staff")
+        super().__init__(name, role="staff")
         self.name = name
         self.role = "staff"
