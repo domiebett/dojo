@@ -30,11 +30,11 @@ class Rooms(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    room_type = Column(String)
+    type = Column(String)
 
-    def __init__(self, name, room_type):
+    def __init__(self, name, type):
         self.name = name
-        self.room_type = room_type
+        self.type = type
 
 
 class Unallocated(Base):

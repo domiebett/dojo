@@ -1,5 +1,9 @@
+from abc import ABCMeta, abstractmethod
+
 class Person(object):
     """Creates a Person who can either be a Fellow or Staff"""
+
+    __metaclass__ = ABCMeta
 
     def __init__(self, name, role, living_space=False):
 
@@ -10,6 +14,10 @@ class Person(object):
         self.gender = None
         self.age = None
         self.office_name = "None"
+
+    @abstractmethod
+    def abs_method(self):
+        return ""
 
     def set_gender(self, gender):
         """Sets the gender of the person"""
@@ -60,3 +68,4 @@ class Staff(Person):
         super().__init__(name, role="staff")
         self.name = name
         self.role = "staff"
+

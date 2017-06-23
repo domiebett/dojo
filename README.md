@@ -110,3 +110,6 @@ tests folder with the following modules:
 ## Author:
 
 Dominic Kipchumba Bett.
+
+## License
+
