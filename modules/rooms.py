@@ -1,15 +1,22 @@
 from modules.people import Staff
+from abc import ABCMeta, abstractmethod
 
 
 class Room(object):
 
+    __metaclass__ = ABCMeta
+
     """Is a room object which contains functions to be imported by
     livingspace and office objects"""
+
+    @abstractmethod
+    def abs_method(self):
+        pass
 
     def has_space(self):
         """Checks if room has space or if it is full"""
 
-        if len(self.room_occupants) < self.maximum_people:
+        if len(self.occupants) < self.maximum_people:
             return True
         return False
 
@@ -25,9 +32,9 @@ class Room(object):
                 print("   Staff are not allowed in Living Space")
                 return "Staff not allowed in Living Space"
             else:
-                self.room_occupants.append(person)
+                self.occupants.append(person)
         else:
-            self.room_occupants.append(person)
+            self.occupants.append(person)
 
 
 class LivingSpace(Room):
@@ -37,9 +44,9 @@ class LivingSpace(Room):
     def __init__(self, name):
 
         self.name = name
-        self.room_type = "living_space"
+        self.type = "living_space"
         self.maximum_people = 4
-        self.room_occupants = []
+        self.occupants = []
 
 
 class Office(Room):
@@ -49,6 +56,6 @@ class Office(Room):
     def __init__(self, name):
 
         self.name = name
-        self.room_type = "office"
+        self.type = "office"
         self.maximum_people = 6
-        self.room_occupants = []
+        self.occupants = []
