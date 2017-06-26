@@ -2,13 +2,15 @@ import os
 import sys
 from os import path
 
-from modules.database import Base, People, Rooms, Unallocated
-from modules.people import Fellow, Person, Staff
-from modules.rooms import LivingSpace, Office, Room
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from tools.tools import *
 from termcolor import cprint
+
+from modules.database import Base, People, Rooms, Unallocated
+from modules.people import Fellow, Person, Staff
+from modules.rooms import LivingSpace, Office, Room
+
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 

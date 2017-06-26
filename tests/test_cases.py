@@ -1,6 +1,5 @@
 import unittest
 from unittest import mock
-
 import os
 from os import path
 import sys

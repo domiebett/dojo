@@ -1,5 +1,6 @@
-from modules.people import Staff
 from abc import ABCMeta, abstractmethod
+
+from modules.people import Staff
 
 
 class Room(object):
