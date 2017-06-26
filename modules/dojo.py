@@ -104,7 +104,7 @@ class Dojo():
     def room_creator(self, room_type, room_name):
         """Creates rooms; either offices or living spaces and appends
         it to either office_array or living_space_array"""
-        
+
         all_rooms = self.offices + self.living_spaces
         room_names = [room.name for room in all_rooms]
         for name in room_names:
@@ -178,7 +178,8 @@ class Dojo():
 
         if self.living_spaces:
             for living_space in self.living_spaces:
-                strings.append("\n\tLiving Space Name:" + living_space.name + "\n")
+                strings.append("\n\tLiving Space Name:" +
+                               living_space.name + "\n")
                 strings.append(people_string(living_space.occupants))
         else:
             strings.append("\n\tThere are no living spaces in the system\n")
