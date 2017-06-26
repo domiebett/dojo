@@ -5,12 +5,12 @@ class Person(object):
 
     __metaclass__ = ABCMeta
 
-    def __init__(self, name, role, living_space=False):
+    def __init__(self, name, role, accommodation="N"):
 
         self.id_key = id(self)
         self.name = name
         self.role = role
-        self.living_space = living_space
+        self.accommodation = accommodation
         self.gender = None
         self.age = None
         self.office_name = "None"
@@ -51,12 +51,12 @@ class Person(object):
 class Fellow(Person):
     """Constructs a Fellow object"""
 
-    def __init__(self, name, living_space=False):
+    def __init__(self, name, accommodation="N"):
 
         super().__init__(name, role="fellow")
         self.name = name
         self.role = "fellow"
-        self.living_space = living_space
+        self.accommodation = accommodation
         self.living_space_name = "None"
 
 
