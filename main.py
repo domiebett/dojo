@@ -33,8 +33,8 @@ Options:
 
 import sys
 import cmd
-from docopt import docopt, DocoptExit
 
+from docopt import docopt, DocoptExit
 from termcolor import cprint
 from pyfiglet import figlet_format
 from colorama import init
