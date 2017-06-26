@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
+
 class Person(object):
     """Creates a Person who can either be a Fellow or Staff"""
 
@@ -68,4 +69,3 @@ class Staff(Person):
         super().__init__(name, role="staff")
         self.name = name
         self.role = "staff"
-
