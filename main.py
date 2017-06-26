@@ -30,14 +30,17 @@ Options:
     -h, --help  Show this screen and exit.
 """
 
-from docopt import docopt, DocoptExit
-from modules.dojo import Dojo
-from termcolor import cprint
-from pyfiglet import figlet_format
+
 import sys
 import cmd
+
+from docopt import docopt, DocoptExit
+from termcolor import cprint
+from pyfiglet import figlet_format
 from colorama import init
 init(strip=not sys.stdout.isatty())
+
+from modules.dojo import Dojo
 
 
 def docopt_cmd(func):

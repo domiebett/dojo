@@ -2,13 +2,15 @@ import os
 import sys
 from os import path
 
-from modules.database import Base, People, Rooms, Unallocated
-from modules.people import Fellow, Person, Staff
-from modules.rooms import LivingSpace, Office, Room
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from tools.tools import *
 from termcolor import cprint
+
+from modules.database import Base, People, Rooms, Unallocated
+from modules.people import Fellow, Person, Staff
+from modules.rooms import LivingSpace, Office, Room
+
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
@@ -31,105 +33,57 @@ class Dojo():
         """Creates people and assigns them a room. Adds them to the unallocated
         list if no rooms exist"""
 
-        if not person_role == "fellow" and not person_role == "staff":
-            cprint("\n   The role '" + person_role +
-                   "' is not allowed. Only fellows and staff", "red")
-            return "Not allowed"
-
-        random_office = random_empty_rooms(self.offices)
-        random_living_space = random_empty_rooms(self.living_spaces)
-        cprint("\n   " + person_name +
-               " (" + person_role + ")" " has been assigned:", "green")
-
-        # checks if there is an office to add person. If there isn't,
-        # appends person to unallocated office array
-
-        if random_office == "Full":
-
-            cprint("     Offices are full. Assigning to unallocated", "yellow")
-            self.append_unallocated_persons(person_name, person_role)
-            random_office_name = "UNALLOCATED !!"
-
-        else:
-            random_office_name = random_office.name
-
-        # Adds a fellow to a random office that still has space.
-
+        random_office = random_empty_room(self.offices)
+        random_livingspace = random_empty_room(self.living_spaces)
         if person_role == "fellow":
-
-            fellow = Fellow(person_name)
-            if not random_office == "Full":
-                fellow.office_name = random_office.name
-                random_office.add_occupant(fellow)
-            cprint("     Office: " + random_office_name, "green")
-
-        # Adds a fellow to a  living space depending on whether
-        # they want accommodation.
-
-            if accommodation == "Y":
-
-                if random_living_space == "Full":
-
-                    cprint("     Living spaces are full. Assigning to" +
-                           " unallocated", "yellow")
-                    self.append_unallocated_persons(
-                        person_name, person_role, "L")
-                    random_living_space_name = "UNALLOCATED !!"
-
-                else:
-                    fellow.living_space_name = random_living_space.name
-                    random_living_space_name = random_living_space.name
-                    random_living_space.add_occupant(fellow)
-
-                cprint("     Living Space: " + random_living_space_name,
-                       "green")
-
-            elif accommodation == "N":
-                cprint("     No Living Space allocated", "yellow")
-
-            else:
-                cprint("     The above option is not allowed", "red")
-                return "Wrong input"
-
-        # Adds a staff member to random office that has space
-
-        if person_role == "staff":
-
-            staff = Staff(person_name)
-            if not random_office == "Full":
-                staff.office_name = random_office.name
-                random_office.add_occupant(staff)
-                random_office_name = random_office.name
-            cprint("     Office: " + random_office_name, "green")
-
-            if accommodation == "Y":
-
-                cprint("     Staff cannot be assigned living space", "red")
-                return "Wrong allocation"
-
-    def append_unallocated_persons(
-            self, person_name, person_role="fellow", room="O"):
-        """Appends people not allocated to any room to unallocated lists"""
-
-        person = ""
-        if person_role == "fellow":
-            person = Fellow(person_name)
+            person = Fellow(person_name, accommodation)
         elif person_role == "staff":
             person = Staff(person_name)
         else:
-            return "No such specification"
+            print("Role " + str(person_role) + " is not recognised")
+            return "Wrong person role"
 
-        if room == "O":
+        # Add to unallocated if all rooms are full
+
+        add_to_office = True
+        add_to_living = True
+        if random_office == "Full":
             self.office_unallocated.append(person)
-        elif room == "L":
+            add_to_office = False
+            print(str(person_name) + " added to office waiting list")
+        if random_livingspace == "Full":
             self.living_unallocated.append(person)
+            add_to_living = False
+            print(str(person_name) + " added to living space waiting list")
+
+        # Add to room
+
+        if add_to_office:
+            random_office.add_occupant(person)
+            person.office_name = random_office.name
+            print(str(person_name) + " added to Office " +
+                  random_office.name)
+
+        if isinstance(person, Staff):
+            print("No living space allocated")
+            return "Cannot add staff to living space"
+
+        if not person.accommodation == "Y":
+            return "Person not allocated a living space"
+
+        if add_to_living:
+            if person.accommodation == "Y":
+                random_livingspace.add_occupant(person)
+                person.living_space_name = random_livingspace.name
+                print(str(person_name) + " added to Living Space " +
+                      random_livingspace.name)
 
     def create_room(self, room_type, room_names):
         """Calls the room creator method with room type and an array
         of room names as arguments"""
 
-        type_array = ["office", "living_space"]
-        if room_type not in type_array:
+        room_types = ["office", "living_space"]
+        if room_type not in room_types:
             cprint("   " + room_type + " is not a valid room type.", "red")
             return "Wrong room type"
 
@@ -151,25 +105,20 @@ class Dojo():
         """Creates rooms; either offices or living spaces and appends
         it to either office_array or living_space_array"""
 
-        office_names = [room.name for room in self.offices]
-        living_space_names = [room.name for room in self.living_spaces]
-        rooms = office_names + living_space_names
-
-        for name in rooms:
+        all_rooms = self.offices + self.living_spaces
+        room_names = [room.name for room in all_rooms]
+        for name in room_names:
             if name.upper() == room_name.upper():
                 cprint("Room named " + room_name + " already exists", "red")
                 return "Room exists"
 
-        # The two below if statements creates an Office or LivingSpace
-        # object, depending on the room_type
+        # Create office or living_space
 
         if room_type == "office":
-
             new_room = Office(room_name)
             self.offices.append(new_room)
 
         elif room_type == "living_space":
-
             new_room = LivingSpace(room_name)
             self.living_spaces.append(new_room)
 
@@ -195,7 +144,7 @@ class Dojo():
                     strings.append("\tRoom Name: " + room_name +
                                    " (" + room.type + ").\n")
 
-                    strings.append(occupant_string(room))
+                    strings.append(people_string(room.occupants))
 
                     strings.append("\n")
                     return ''.join(strings)
@@ -213,22 +162,27 @@ class Dojo():
         strings.append("\tOFFICES\n")
         strings.append("\t---------")
 
+        # Generate string with information on office occupants
+
         if self.offices:
-            for room in self.offices:
-                strings.append("\n\tOffice Name: " + room.name + "\n")
-                strings.append(occupant_string(room))
+            for office in self.offices:
+                strings.append("\n\tOffice Name: " + office.name + "\n")
+                strings.append(people_string(office.occupants))
         else:
-            strings.append("\n\tThere are no offices in the system")
+            strings.append("\n\tThere are no offices in the system\n")
 
         strings.append("\n\tLIVING SPACES\n")
         strings.append("\t----------------")
 
+        # Generate string with information on living space occupants
+
         if self.living_spaces:
-            for room in self.living_spaces:
-                strings.append("\n\tLiving Space Name:" + room.name + "\n")
-                strings.append(occupant_string(room))
+            for living_space in self.living_spaces:
+                strings.append("\n\tLiving Space Name:" +
+                               living_space.name + "\n")
+                strings.append(people_string(living_space.occupants))
         else:
-            strings.append("\n\tThere are no living spaces in the system")
+            strings.append("\n\tThere are no living spaces in the system\n")
 
         strings.append("\n")
         string = ''.join(strings)
@@ -253,39 +207,14 @@ class Dojo():
 
         strings = []
         strings.append("\nUNALLOCATED: \n")
+
         strings.append("\tOFFICES\n")
         strings.append("\t---------\n")
-        data = [[" ", "Name", "|", "Id"], [" ", "-----", "", "---"]]
-        count = 1
-
-        for person in self.office_unallocated:
-
-            data.append([(str(count) + ". "), person.name,
-                         "|", str(person.id_key)])
-            count += 1
-
-        col_width = [max(map(len, col)) for col in zip(*data)]
-        for row in data:
-            strings.append("\t\t" + (" ".join((val.ljust(width)
-                                               for val, width
-                                               in zip(row, col_width))) + "\n"))
+        strings.append(people_string(self.office_unallocated))
 
         strings.append("\n\tLIVING SPACES\n")
         strings.append("\t---------------\n")
-        data = [[" ", "Name", "|", "Id"], [" ", "-----", "", "---"]]
-        count = 1
-
-        for person in self.living_unallocated:
-
-            data.append([(str(count) + ". "), person.name,
-                         "|", str(person.id_key)])
-            count += 1
-
-        col_width = [max(map(len, col)) for col in zip(*data)]
-        for row in data:
-            strings.append("\t\t" + (" ".join((val.ljust(width)
-                                               for val, width
-                                               in zip(row, col_width))) + "\n"))
+        strings.append(people_string(self.living_unallocated))
 
         string = ''.join(strings)
 
@@ -306,7 +235,6 @@ class Dojo():
         if not is_int(person_identifier):
             cprint("\n   Id must be an integer, type 'print_allocations' " +
                    "to view all people's id(s)", "red")
-
             return "Not an integer"
 
         selected_room = "None"
@@ -314,69 +242,69 @@ class Dojo():
         current_room = "None"
         merged_array = self.offices + self.living_spaces
 
-        # Finds current room, room to be reallocated to and person
-        # for reallocation and assigns them to variables
+        # Find room to be reallocated to.
+
         for room in merged_array:
             if room.name == room_name:
                 selected_room = room
+                break
 
-                if selected_room.type == "office":
-                    for office in self.offices:
-                        for person in office.occupants:
-                            if int(person.id_key) == int(person_identifier):
-                                current_room = office
-                                selected_person = person
-                                break
+        if not isinstance(selected_room, Room):
+            cprint("   Room doesnt exist", "red")
+            return "Room doesnt exist"
 
-                elif selected_room.type == "living_space":
-                    for living_space in self.living_spaces:
-                        for person in living_space.occupants:
-                            if int(person.id_key) == int(person_identifier):
-                                current_room = living_space
-                                selected_person = person
-                                break
+        # Find person to be reallocated and person's current room
+
+        if selected_room.type == "office":
+            for office in self.offices:
+                for person in office.occupants:
+                    if int(person.id_key) == int(person_identifier):
+                        current_room = office
+                        selected_person = person
+                        break
+
+        elif selected_room.type == "living_space":
+            for living_space in self.living_spaces:
+                for person in living_space.occupants:
+                    if int(person.id_key) == int(person_identifier):
+                        current_room = living_space
+                        selected_person = person
+                        break
+
+        if not isinstance(selected_person, Person):
+            cprint("   Person is not allocated to any " +
+                   selected_room.type + "s", "red")
+            return "Wrong reallocation"
 
         # Reallocates person if room_type match, person & room exists and
         # destination is not full
 
-        if isinstance(selected_room, Room):
+        if current_room.name == room_name:
+            cprint("\n   Person is already in the room\n", "red")
+            return "Wrong reallocation"
 
-            if isinstance(selected_person, Person):
+        if current_room.type == selected_room.type:
 
-                if current_room.name == room_name:
-                    cprint("\n   Person is already in the room\n", "red")
-                    return "Wrong reallocation"
+            if selected_room.has_space():
+                if selected_room.type == "office":
+                    selected_person.office_name = selected_room.name
+                elif selected_room.type == "living_space":
+                    selected_person.living_space_name = selected_room.name
 
-                if current_room.type == selected_room.type:
-
-                    if selected_room.has_space():
-                        if selected_room.type == "office":
-                            selected_person.office_name = selected_room.name
-                        elif selected_room.type == "living_space":
-                            selected_person.living_space_name = selected_room.name
-
-                        selected_room.add_occupant(selected_person)
-                        current_room.occupants.remove(selected_person)
-                        cprint("\n   " + selected_person.name +
-                               " has been reallocated to " +
-                               selected_room.type + " " +
-                               selected_room.name + "\n", "green")
-
-                    else:
-                        return "Destination is full"
-
-                else:
-                    cprint("\n   You have to reallocate to similar room types" +
-                           "\n", "red")
-                    return "Cannot add to room"
+                selected_room.add_occupant(selected_person)
+                current_room.occupants.remove(selected_person)
+                cprint("\n   " + selected_person.name +
+                       " has been reallocated to " +
+                       selected_room.type + " " +
+                       selected_room.name + "\n", "green")
 
             else:
-                cprint("   Person is not allocated to any " +
-                       selected_room.type + "s", "red")
-                return "Wrong reallocation"
+                return "Destination is full"
+
         else:
-            cprint("   Room doesnt exist", "red")
-            return "Room doesnt exist"
+            cprint("\n   You have to reallocate to similar room types" +
+                   "\n", "red")
+            return "Cannot add to room"
 
     def load_people(self, file_name):
         """Loads people from a text file and adds them to rooms"""
@@ -453,7 +381,7 @@ class Dojo():
 
         session.commit()
 
-        # Add people
+        # Add  allocated people
 
         for person in people_array:
 
@@ -481,12 +409,15 @@ class Dojo():
 
             if person in self.office_unallocated:
                 room_type = "office"
+                db_unallocated = Unallocated(person.name, person.role, "office",
+                                             person.gender, person.age)
+                session.add(db_unallocated)
+
             if person in self.living_unallocated:
                 room_type = "living_space"
-
-            db_unallocated = Unallocated(person.name, person.role, room_type,
-                                         person.gender, person.age)
-            session.add(db_unallocated)
+                db_unallocated = Unallocated(person.name, person.role, "living_space",
+                                             person.gender, person.age)
+                session.add(db_unallocated)
 
         session.commit()
         cprint("   Unallocated persons have been added to the database" +
@@ -505,95 +436,93 @@ class Dojo():
         temp_office_array = []
         temp_living_array = []
 
-        if os.path.exists(database):
-
-            database_name = "sqlite:///" + str(database)
-            engine = create_engine(database_name)
-
-            Session = sessionmaker(bind=engine)
-            session = Session()
-
-            # Retrieve rooms if they exist
-
-            if session.query(Rooms):
-
-                for db_room in session.query(Rooms):
-                    if db_room.type == "office":
-                        office = Office(db_room.name)
-                        temp_office_array.append(office)
-                        cprint("   Office named " + office.name + " retrieved",
-                               "green")
-                    elif db_room.type == "living_space":
-                        living_space = LivingSpace(db_room.name)
-                        temp_living_array.append(living_space)
-                        cprint("   Living space name " +
-                               living_space.name + " retrieved", "green")
-
-                # Retrieve people if they exist and add them to rooms
-
-                if session.query(People):
-
-                    for person in session.query(People):
-                        if person.role == "fellow":
-
-                            fellow = Fellow(person.name)
-                            fellow.office_name = person.office_name
-
-                            if not person.office_name == "None":
-                                add_to_room(
-                                    fellow, person.office_name,
-                                    temp_office_array)
-
-                            fellow.living_space_name = person.living_space_name
-                            if not person.living_space_name == "None":
-                                add_to_room(
-                                    fellow, person.living_space_name,
-                                    temp_living_array)
-
-                        elif person.role == "staff":
-                            staff = Staff(person.name)
-                            staff.office_name = person.office_name
-                            if not person.office_name == "None":
-                                add_to_room(
-                                    staff, person.office_name,
-                                    temp_office_array)
-
-                cprint("\n   Successfully retrieved rooms and occupants\n",
-                       "green")
-
-                # Check for room conflicts and add rooms based on user input.
-
-                self.add_db_rooms(temp_office_array)
-                self.add_db_rooms(temp_living_array)
-            else:
-                cprint("   There are no rooms in database", "yellow")
-
-            # Retrieve unallocated persons if they exist
-
-            if session.query(Unallocated):
-
-                for person in session.query(Unallocated):
-                    if person.role == "fellow":
-                        fellow = Fellow(person.name)
-                        if person.room_type == "office":
-                            self.office_unallocated.append(fellow)
-                        elif person.room_type == "living_space":
-                            self.living_unallocated.append(fellow)
-                    if person.role == "staff":
-                        staff = Staff(person.name)
-                        if person.room_type == "office":
-                            self.office_unallocated.append(staff)
-
-                cprint("   Successfully retrieved unallocated persons",
-                       "green")
-
-            else:
-                cprint("   There are no unallocated people in database",
-                       "yellow")
-
-        else:
+        if not os.path.exists(database):
             cprint("There is no database named " + database, "red")
             return "No database"
+
+        database_name = "sqlite:///" + str(database)
+        engine = create_engine(database_name)
+
+        Session = sessionmaker(bind=engine)
+        session = Session()
+
+        # Retrieve rooms if they exist
+
+        if session.query(Rooms):
+
+            for db_room in session.query(Rooms):
+                if db_room.type == "office":
+                    office = Office(db_room.name)
+                    temp_office_array.append(office)
+                    cprint("   Office named " + office.name + " retrieved",
+                           "green")
+                elif db_room.type == "living_space":
+                    living_space = LivingSpace(db_room.name)
+                    temp_living_array.append(living_space)
+                    cprint("   Living space name " +
+                           living_space.name + " retrieved", "green")
+
+            # Retrieve people if they exist and add them to rooms
+
+            if session.query(People):
+
+                for person in session.query(People):
+                    if person.role == "fellow":
+
+                        fellow = Fellow(person.name)
+                        fellow.office_name = person.office_name
+
+                        if not person.office_name == "None":
+                            add_to_room(
+                                fellow, person.office_name,
+                                temp_office_array)
+
+                        fellow.living_space_name = person.living_space_name
+                        if not person.living_space_name == "None":
+                            add_to_room(
+                                fellow, person.living_space_name,
+                                temp_living_array)
+
+                    elif person.role == "staff":
+                        staff = Staff(person.name)
+                        staff.office_name = person.office_name
+                        if not person.office_name == "None":
+                            add_to_room(
+                                staff, person.office_name,
+                                temp_office_array)
+
+            cprint("\n   Successfully retrieved rooms and occupants\n",
+                   "green")
+
+            # Check for room conflicts and add rooms based on user input.
+
+            self.add_db_rooms(temp_office_array)
+            self.add_db_rooms(temp_living_array)
+        else:
+            cprint("   There are no rooms in database", "yellow")
+
+        # Retrieve unallocated persons if they exist
+
+        if session.query(Unallocated):
+
+            for person in session.query(Unallocated):
+                if person.role == "fellow":
+                    fellow = Fellow(person.name)
+                    if person.room_type == "office":
+                        self.office_unallocated.append(fellow)
+                    elif person.room_type == "living_space":
+                        self.living_unallocated.append(fellow)
+                if person.role == "staff":
+                    staff = Staff(person.name)
+                    if person.room_type == "office":
+                        self.office_unallocated.append(staff)
+
+            cprint("   Successfully retrieved unallocated persons",
+                   "green")
+
+        else:
+            cprint("   There are no unallocated people in database",
+                   "yellow")
 
     def add_db_rooms(self, rooms_array):
         """Checks for conflicts between db rooms and system rooms and requests user
@@ -619,9 +548,7 @@ class Dojo():
             if room_conflict:
                 cprint("\n   There is conflict. Room named " +
                        dbroom_name + " exists in system", "red")
-                cprint(
-                    "   Which version would you like to keep?\
-                     \n   Type 'skip' to keep all system files", "red")
+                cprint("   Which would you like to keep?")
                 response = get_input(
                     "      Enter ['database'], ['system'] or ['skip'] >> ")
 
@@ -667,7 +594,7 @@ class Dojo():
                 if room.name == identifier:
                     if room.type == "office":
                         self.offices.remove(room)
-                        cprint("Room named " + room.name + " has been " +
+                        cprint("Office " + room.name + " has been " +
                                " deleted.", "green")
                         return "Success"
                     elif room.type == "living_space":

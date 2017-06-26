@@ -1,4 +1,5 @@
 import random
+
 from termcolor import cprint
 
 
@@ -18,7 +19,7 @@ def get_input(text):
     return input(text)
 
 
-def random_empty_rooms(array):
+def random_empty_room(array):
     """Generates a random room with space for allocation. Takes either
     office or living_space array as arguments"""
 
@@ -39,28 +40,30 @@ def random_empty_rooms(array):
     return random_room
 
 
-def occupant_string(room):
-    """Concatenates strings with information of occupants in a room"""
+def people_string(people):
+    """Concatenates strings with information of people in an array"""
+
+    if not people:
+        string = "\tThere are no people to print\n"
+        return string
 
     string = "\tOccupants: \n"
     count = 1
-
     data = [[" ", "Name", "|", "Id"], [" ", "-----", "", "---"]]
 
-    # Arranges occupant information into a list which is then appended
+    # Arrange occupant information into a list which is then appended
     # to the 'data' list to be used to display data to console.
 
-    for occupant in room.occupants:
-        data.append([(str(count) + ". "), occupant.name,
-                     "|", str(occupant.id_key)])
+    for person in people:
+        data.append([(str(count) + ". "), person.name,
+                     "|", str(person.id_key)])
         count += 1
 
     col_width = [max(map(len, col))
                  for col in zip(*data)]  # Spaces between columns
 
     # Takes each list from the data list above and arranges it as
-    # rows, with columns spaced with the maximum column width plus
-    # col_width
+    # into neat rows.
 
     for row in data:
         string += "\t\t" + (" ".join((val.ljust(width)
@@ -74,7 +77,7 @@ def assign_unallocated(unallocated_array, room_array):
     """Automatically allocates unallocated people to rooms if one exists"""
 
     while len(unallocated_array) > 0:
-        empty_room = random_empty_rooms(room_array)
+        empty_room = random_empty_room(room_array)
 
         if empty_room == "Full":
             break

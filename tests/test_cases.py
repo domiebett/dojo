@@ -1,6 +1,5 @@
 import unittest
 from unittest import mock
-
 import os
 from os import path
 import sys
@@ -62,17 +61,19 @@ class AddPersonTestCase(unittest.TestCase):
     def test_only_fellow_and_staff_allowed(self):
         illegal_person = self.dojo.add_person(
             "Dominic Bett", "boogey_man", "Y")
-        self.assertEqual(illegal_person, "Not allowed")
+        self.assertEqual(illegal_person, "Wrong person role")
 
     def test_staff_doesnt_get_living_space(self):
         staff_accommodation = self.dojo.add_person(
             "Patrick Sacho", "staff", "Y")
-        self.assertEqual(staff_accommodation, "Wrong allocation")
+        self.assertEqual(staff_accommodation,
+                         "Cannot add staff to living space")
 
-    def test_only_Y_and_N_accommodation_options_allowed(self):
+    def test_only_Y_option_allocates_accomodation(self):
         illegal_accommodation = self.dojo.add_person(
             "Patrick Sacho", "fellow", "P")
-        self.assertEqual(illegal_accommodation, "Wrong input")
+        self.assertEqual(illegal_accommodation,
+                         "Person not allocated a living space")
 
     def test_unallocated_is_automatically_added_to_room(self):
         self.dojo.create_room("office", ["Yellow"])
@@ -81,7 +82,7 @@ class AddPersonTestCase(unittest.TestCase):
         unallocated = self.dojo.office_unallocated
         self.assertEqual(len(unallocated), 0)
 
-    def test_added_person_allocation(self):
+    def test_person_allocation(self):
         self.dojo.create_room("office", ["Blue"])
         self.dojo.add_person("Darren", "fellow")
         occupants = self.dojo.offices[0].occupants
@@ -111,11 +112,6 @@ class AllocationsTestCase(unittest.TestCase):
     def test_room_exists(self):
         print_room = self.dojo.print_room("White")
         self.assertEqual(print_room, "Room doesnt exist")
-
-    def test_autoallocation_person_type(self):
-        wrong_allocation = self.dojo.append_unallocated_persons(
-            "Dominic Bett", "ninja")
-        self.assertEqual(wrong_allocation, "No such specification")
 
     def test_print_room(self):
         printed_room = self.dojo.print_room("Yellow")
@@ -296,7 +292,7 @@ class DatabaseTestCase(unittest.TestCase):
         self.dojo.load_state("tests.db")
         unallocated = [len(self.dojo.office_unallocated),
                        len(self.dojo.living_unallocated)]
-        self.assertListEqual(unallocated, [1, 3])
+        self.assertListEqual(unallocated, [2, 4])
 
     def test_load_state_room_occupants(self):
         self.dojo.load_state("tests.db")
