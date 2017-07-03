@@ -66,6 +66,8 @@ class AddPersonTestCase(unittest.TestCase):
     def test_staff_doesnt_get_living_space(self):
         staff_accommodation = self.dojo.add_person(
             "Patrick Sacho", "staff", "Y")
+        self.assertEqual(self.dojo.office_unallocated[1].name,
+                         "Patrick Sacho")
         self.assertEqual(staff_accommodation,
                          "Cannot add staff to living space")
 
